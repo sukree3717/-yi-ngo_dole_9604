@@ -1,0 +1,3239 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบวิเคราะห์ผู้เรียนรายบุคคล (หลักสูตร กศน. พ.ศ. 2551)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f5f8;
+      --surface: #ffffff;
+      --surface-subtle: #f8fafc;
+      --border: #d8dee6;
+      --border-strong: #94a3b8;
+      --ink: #0f172a;
+      --muted: #475569;
+      --brand: #1e3a8a;
+      --brand-hover: #1d4ed8;
+      --brand-soft: #eff6ff;
+      --brand-ink: #ffffff;
+      --danger: #b91c1c;
+      --danger-soft: #fef2f2;
+      --warning-soft: #fffbeb;
+      --warning-ink: #92400e;
+      --success-soft: #ecfdf5;
+      --success-ink: #065f46;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --font: 'Sarabun', 'TH Sarabun IT', 'Angsana New', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+      --font-doc: 'Sarabun', 'TH Sarabun IT', 'Angsana New', Tahoma, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    /* App Header */
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 9px;
+      background: var(--brand);
+      color: var(--brand-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .tab-btn {
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      background: var(--surface-subtle);
+      color: var(--ink);
+    }
+
+    .tab-btn:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .tab-btn.active {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-color: #bfdbfe;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+
+    .view-panel {
+      display: none;
+    }
+
+    .view-panel.active {
+      display: block;
+    }
+
+    /* Cards & Fieldsets */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .section-desc {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+
+    fieldset.form-group-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin: 0 0 var(--space-5) 0;
+      background: var(--surface);
+    }
+
+    fieldset.form-group-box legend {
+      padding: 0 var(--space-2);
+      font-weight: 700;
+      font-size: 15.5px;
+      color: var(--brand);
+    }
+
+    .sub-group-divider {
+      margin: var(--space-4) 0 var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px dashed var(--border);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label,
+    .field-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .req {
+      color: var(--danger);
+      margin-left: 2px;
+    }
+
+    .field input[type="text"],
+    .field input[type="number"],
+    .field input[type="email"],
+    .field select,
+    .field textarea {
+      font: inherit;
+      font-size: 14.5px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      width: 100%;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.14);
+    }
+
+    .field input[aria-invalid="true"] {
+      border-color: var(--danger);
+      background: #fffafa;
+    }
+
+    .field-error {
+      font-size: 12.5px;
+      color: var(--danger);
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    .custom-extra-input {
+      display: none;
+      margin-top: 4px;
+    }
+
+    .custom-extra-input.visible {
+      display: block;
+    }
+
+    /* Inline Radio & Checkbox Groups */
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3) var(--space-5);
+      padding: 6px 0;
+    }
+
+    .choice-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .choice-item input[type="radio"],
+    .choice-item input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--brand);
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .pc-usage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-3);
+      margin-top: 6px;
+    }
+
+    .pc-usage-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-subtle);
+    }
+
+    .inline-hour-select {
+      width: 108px !important;
+      padding: 5px 8px !important;
+    }
+
+    .conditional-box {
+      margin-top: var(--space-3);
+      padding: var(--space-4);
+      border-radius: 8px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+    }
+
+    /* Section 2 Assessment Matrix Form */
+    .eval-domain-card {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .eval-domain-head {
+      background: var(--surface-subtle);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .eval-domain-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--brand);
+    }
+
+    .eval-subitems {
+      padding: 8px 16px;
+    }
+
+    .eval-subitem-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .eval-subitem-row:last-child {
+      border-bottom: none;
+    }
+
+    .eval-subitem-label {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--ink);
+      min-width: 240px;
+    }
+
+    .rating-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .rating-pill {
+      position: relative;
+    }
+
+    .rating-pill input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .rating-pill span {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .rating-pill input[type="radio"]:focus-visible + span {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .rating-pill input[type="radio"]:checked + span {
+      background: var(--brand);
+      color: var(--brand-ink);
+      border-color: var(--brand);
+      font-weight: 600;
+    }
+
+    .eval-domain-footer {
+      background: #fcfdff;
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    @media (min-width: 768px) {
+      .eval-domain-footer {
+        grid-template-columns: 220px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .btn {
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: var(--brand-ink);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--brand-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--ink);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--surface-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #fee2e2;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+
+    .inline-status {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .inline-status.ok {
+      color: var(--success-ink);
+    }
+
+    .inline-status.err {
+      color: var(--danger);
+    }
+
+    /* Records Table */
+    .records-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 13.5px;
+    }
+
+    table.data-table th,
+    table.data-table td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    table.data-table th {
+      background: var(--surface-subtle);
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    table.data-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    table.data-table td.num {
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-good {
+      background: var(--success-soft);
+      color: var(--success-ink);
+    }
+
+    .badge-mid {
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .badge-low {
+      background: var(--warning-soft);
+      color: var(--warning-ink);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-subtle);
+    }
+
+    .empty-state h3 {
+      margin: 0 0 var(--space-2);
+      font-size: 17px;
+      color: var(--ink);
+    }
+
+    .empty-state p {
+      margin: 0 0 var(--space-4);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Print Preview Stage & Official A4 Pages */
+    .print-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: var(--space-5);
+    }
+
+    .print-controls-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .paper-stage {
+      background: #cbd5e1;
+      padding: var(--space-6) var(--space-4);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .a4-page {
+      width: 100%;
+      max-width: 210mm;
+      min-height: 285mm;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #000000;
+      font-family: var(--font-doc);
+      padding: 15mm 17mm;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .doc-center-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .doc-center-header h2 {
+      margin: 0;
+      font-size: 17.5px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .doc-center-header h3 {
+      margin: 2px 0;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .doc-center-header p {
+      margin: 2px 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #000;
+    }
+
+    .doc-edu-level-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px;
+      margin: 10px 0 12px;
+      font-size: 14px;
+    }
+
+    .doc-section-heading {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 10px 0 6px;
+      color: #000;
+    }
+
+    .doc-item-list {
+      padding-left: 16px;
+    }
+
+    .doc-line {
+      margin-bottom: 5px;
+      font-size: 13.8px;
+      line-height: 1.6;
+    }
+
+    .fill-val {
+      display: inline-block;
+      min-width: 60px;
+      padding: 0 6px;
+      border-bottom: 1px dotted #000;
+      font-weight: 500;
+      color: #000;
+    }
+
+    .doc-paren-check {
+      display: inline-block;
+      font-family: var(--font-doc);
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    /* Official Section 2 Evaluation Table */
+    table.official-eval-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      font-size: 13px;
+      color: #000;
+    }
+
+    table.official-eval-table th,
+    table.official-eval-table td {
+      border: 1px solid #000000;
+      padding: 5px 7px;
+      vertical-align: top;
+    }
+
+    table.official-eval-table th {
+      text-align: center;
+      font-weight: 700;
+      background: #f8fafc;
+      vertical-align: middle;
+    }
+
+    table.official-eval-table td.center {
+      text-align: center;
+    }
+
+    .subitem-stack div {
+      min-height: 21px;
+    }
+
+    .mark-stack div {
+      min-height: 21px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .teacher-comment-block {
+      margin: 10px 0 14px;
+      font-size: 13.8px;
+    }
+
+    .comment-lines-box {
+      min-height: 46px;
+      border-bottom: 1px dotted #000;
+      padding: 4px 6px;
+      line-height: 1.6;
+    }
+
+    /* Dual Signature Certification (Teacher + School Executive) */
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 16px;
+      margin-top: 16px;
+      page-break-inside: avoid;
+    }
+
+    .sig-box {
+      border: 1px solid #000;
+      padding: 11px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 13.2px;
+    }
+
+    .sig-box-title {
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      font-size: 13.8px;
+    }
+
+    .exec-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .checkbox-square {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1px solid #000;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .dotted-comment {
+      border-bottom: 1px dotted #000;
+      height: 19px;
+      margin-bottom: 3px;
+    }
+
+    .sig-lines {
+      text-align: center;
+      margin-top: 14px;
+      line-height: 1.65;
+    }
+
+    .editing-banner {
+      background: var(--brand-soft);
+      border: 1px solid #bfdbfe;
+      color: var(--brand);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: var(--space-4);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-weight: 600;
+    }
+
+    .editing-banner.visible {
+      display: flex;
+    }
+
+    /* Subtle Admin Footer & Setup Modal */
+    .admin-footer {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .link-btn {
+      font: inherit;
+      font-size: 13px;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .link-btn:hover {
+      color: var(--brand);
+      background: var(--surface-subtle);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22);
+      width: 100%;
+      max-width: 820px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: var(--space-6);
+    }
+
+    .code-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: var(--space-4);
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-height: 280px;
+      white-space: pre;
+      margin: var(--space-3) 0 0;
+    }
+
+    /* Print Media Query */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 11mm 14mm;
+      }
+
+      body {
+        background: #ffffff;
+        color: #000000;
+      }
+
+      .app-header,
+      .no-print,
+      .print-toolbar,
+      .admin-footer,
+      .modal-backdrop {
+        display: none !important;
+      }
+
+      .container {
+        max-width: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .card {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .view-panel {
+        display: none !important;
+      }
+
+      #view-records {
+        display: block !important;
+      }
+
+      .paper-stage {
+        background: transparent;
+        padding: 0;
+        gap: 0;
+        overflow: visible;
+      }
+
+      .a4-page {
+        max-width: none;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+      }
+
+      .a4-page.page-break-after {
+        page-break-after: always;
+        break-after: page;
+      }
+
+      table.official-eval-table th {
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        padding: var(--space-4);
+      }
+      .card {
+        padding: var(--space-4);
+      }
+      .signature-grid {
+        grid-template-columns: 1fr;
+      }
+      .a4-page {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            <path d="M9 7h6"/>
+            <path d="M9 11h6"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">ระบบวิเคราะห์ผู้เรียนรายบุคคล (หลักสูตร กศน. พ.ศ. 2551)</h1>
+          <p class="brand-subtitle">บันทึกแบบวิเคราะห์ผู้เรียนรายบุคคลแบบมีตัวเลือก และพิมพ์เอกสารเสนอผู้บริหารลงนามรับรอง</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="เมนูหลัก">
+        <button type="button" class="tab-btn active" data-tab="view-form">
+          1. กรอกข้อมูลผู้เรียน
+        </button>
+        <button type="button" class="tab-btn" data-tab="view-records">
+          2. ทะเบียนและพิมพ์เอกสารรับรอง
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- VIEW 1: DATA ENTRY FORM WITH SELECTABLE DROPDOWNS -->
+    <section id="view-form" class="view-panel active" aria-labelledby="form-heading">
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="form-heading">ตั้งค่าข้อมูลสถานศึกษา ภาคเรียน และผู้ลงนามรับรอง</h2>
+            <p class="section-desc">ใช้แสดงบนหัวเอกสารแบบวิเคราะห์ผู้เรียนรายบุคคล และช่องลงนามครูผู้สอน / ผู้บริหารสถานศึกษา</p>
+          </div>
+          <span id="config-status" class="inline-status" aria-live="polite"></span>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="cfg-school">ชื่อสถานศึกษา / ศกร. / กศน.</label>
+            <input type="text" id="cfg-school" placeholder="เช่น ศกร.ระดับอำเภอ...">
+          </div>
+          <div class="field">
+            <label for="cfg-term">ภาคเรียนที่</label>
+            <select id="cfg-term">
+              <option value="1">ภาคเรียนที่ 1</option>
+              <option value="2">ภาคเรียนที่ 2</option>
+              <option value="ตลอดปีการศึกษา">ตลอดปีการศึกษา</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cfg-year">ปีการศึกษา</label>
+            <select id="cfg-year" data-custom-input="cfg-year-custom">
+              <option value="2568">2568</option>
+              <option value="2569" selected>2569</option>
+              <option value="2570">2570</option>
+              <option value="2571">2571</option>
+              <option value="2567">2567</option>
+              <option value="__custom__">อื่น ๆ (ระบุปีการศึกษาเอง)</option>
+            </select>
+            <input type="text" id="cfg-year-custom" class="custom-extra-input" placeholder="ระบุปีการศึกษา เช่น 2572">
+          </div>
+          <div class="field">
+            <label for="cfg-teacher">ชื่อครูผู้สอน (ผู้วิเคราะห์)</label>
+            <input type="text" id="cfg-teacher" placeholder="ชื่อ-นามสกุล ครูผู้สอน">
+          </div>
+          <div class="field">
+            <label for="cfg-director">ชื่อผู้บริหารสถานศึกษา (ผู้เซ็นรับรอง)</label>
+            <input type="text" id="cfg-director" placeholder="ชื่อ-นามสกุล ผู้อำนวยการ">
+          </div>
+          <div class="field">
+            <label for="cfg-director-pos">ตำแหน่งผู้บริหาร</label>
+            <select id="cfg-director-pos" data-custom-input="cfg-director-pos-custom">
+              <option value="ผู้อำนวยการ สกร.ระดับอำเภอยี่งอ" selected>ผู้อำนวยการ สกร.ระดับอำเภอยี่งอ</option>
+              <option value="รักษาการในตำแหน่งผู้อำนวยการ สกร.ระดับอำเภอยี่งอ">รักษาการในตำแหน่งผู้อำนวยการ สกร.ระดับอำเภอยี่งอ</option>
+              <option value="ผู้อำนวยการสถานศึกษา">ผู้อำนวยการสถานศึกษา</option>
+              <option value="ผู้อำนวยการศูนย์ส่งเสริมการเรียนรู้ระดับอำเภอ">ผู้อำนวยการศูนย์ส่งเสริมการเรียนรู้ระดับอำเภอ</option>
+              <option value="รองผู้อำนวยการสถานศึกษา รักษาการในตำแหน่งผู้อำนวยการสถานศึกษา">รองผู้อำนวยการสถานศึกษา รักษาการในตำแหน่งผู้อำนวยการสถานศึกษา</option>
+              <option value="ครู รักษาการในตำแหน่งผู้อำนวยการสถานศึกษา">ครู รักษาการในตำแหน่งผู้อำนวยการสถานศึกษา</option>
+              <option value="__custom__">อื่น ๆ (ระบุตำแหน่งเอง)</option>
+            </select>
+            <input type="text" id="cfg-director-pos-custom" class="custom-extra-input" placeholder="ระบุตำแหน่งผู้บริหาร">
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 14px;">
+          <button type="button" class="btn btn-secondary" id="btn-save-config">บันทึกข้อมูลหัวเอกสารและผู้ลงนาม</button>
+        </div>
+      </div>
+
+      <form id="student-form" class="card" novalidate>
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">แบบวิเคราะห์ผู้เรียนรายบุคคล</h2>
+            <p class="section-desc">หลักสูตรการศึกษานอกระบบระดับการศึกษาขั้นพื้นฐาน พุทธศักราช 2551 (คลิกเลือกข้อมูลจากรายการตัวเลือก)</p>
+          </div>
+        </div>
+
+        <div id="editing-banner" class="editing-banner">
+          <span id="editing-banner-text">กำลังแก้ไขข้อมูลผู้เรียน</span>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-cancel-edit">ยกเลิกการแก้ไข</button>
+        </div>
+
+        <input type="hidden" id="stu-id" value="">
+
+        <!-- ระดับการศึกษา -->
+        <fieldset class="form-group-box">
+          <legend>ระดับการศึกษาของผู้เรียน</legend>
+          <div class="grid-3" style="align-items: center;">
+            <div class="field" style="grid-column: span 2;">
+              <label for="stu-edu-level">เลือกระดับการศึกษา <span class="req">*</span></label>
+              <select id="stu-edu-level">
+                <option value="ประถมศึกษา">ประถมศึกษา</option>
+                <option value="มัธยมศึกษาตอนต้น" selected>มัธยมศึกษาตอนต้น</option>
+                <option value="มัธยมศึกษาตอนปลาย">มัธยมศึกษาตอนปลาย</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="stu-code">รหัสประจำตัวผู้เรียน (ถ้ามี)</label>
+              <input type="text" id="stu-code" placeholder="สำหรับอ้างอิงในทะเบียน">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 1. ข้อมูลพื้นฐาน (1.1 - 1.14) -->
+        <fieldset class="form-group-box">
+          <legend>1. ข้อมูลพื้นฐาน (ข้อ 1.1 – 1.14)</legend>
+
+          <!-- 1.1 & 1.2 -->
+          <div class="grid-4">
+            <div class="field">
+              <label for="stu-prefix">1.1 คำนำหน้า</label>
+              <select id="stu-prefix">
+                <option value="นาย">นาย</option>
+                <option value="นางสาว">นางสาว</option>
+                <option value="นาง">นาง</option>
+                <option value="เด็กชาย">เด็กชาย</option>
+                <option value="เด็กหญิง">เด็กหญิง</option>
+                <option value="">ไม่ระบุ (พิมพ์รวมในชื่อ)</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column: span 2;">
+              <label for="stu-fullname">ชื่อ - นามสกุล <span class="req">*</span></label>
+              <input type="text" id="stu-fullname" placeholder="ระบุชื่อ และนามสกุล" required>
+              <div class="field-error" id="err-stu-fullname">กรุณาระบุชื่อ-นามสกุลของผู้เรียน</div>
+            </div>
+            <div class="field">
+              <label for="stu-age">อายุ (ปี)</label>
+              <select id="stu-age" data-custom-input="stu-age-custom"></select>
+              <input type="number" id="stu-age-custom" class="custom-extra-input" min="1" max="120" placeholder="ระบุอายุ (ปี)">
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 12px;">
+            <div class="field">
+              <label for="stu-birth-day">1.2 เกิดวันที่</label>
+              <select id="stu-birth-day"></select>
+            </div>
+            <div class="field">
+              <label for="stu-birth-month">เดือนเกิด</label>
+              <select id="stu-birth-month">
+                <option value="">-- เลือกเดือน --</option>
+                <option value="มกราคม">มกราคม</option>
+                <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                <option value="มีนาคม">มีนาคม</option>
+                <option value="เมษายน">เมษายน</option>
+                <option value="พฤษภาคม">พฤษภาคม</option>
+                <option value="มิถุนายน">มิถุนายน</option>
+                <option value="กรกฎาคม">กรกฎาคม</option>
+                <option value="สิงหาคม">สิงหาคม</option>
+                <option value="กันยายน">กันยายน</option>
+                <option value="ตุลาคม">ตุลาคม</option>
+                <option value="พฤศจิกายน">พฤศจิกายน</option>
+                <option value="ธันวาคม">ธันวาคม</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="stu-birth-year">พ.ศ. เกิด</label>
+              <select id="stu-birth-year" data-custom-input="stu-birth-year-custom"></select>
+              <input type="text" id="stu-birth-year-custom" class="custom-extra-input" placeholder="ระบุ พ.ศ. เกิด">
+            </div>
+          </div>
+
+          <!-- 1.3 ที่อยู่ -->
+          <div class="sub-group-divider">1.3 ที่อยู่ปัจจุบันและการติดต่อ</div>
+          <div class="grid-4">
+            <div class="field">
+              <label for="stu-living-with">ปัจจุบันอาศัยอยู่กับ</label>
+              <select id="stu-living-with" data-custom-input="stu-living-with-custom">
+                <option value="">-- เลือกผู้ที่อาศัยอยู่ด้วย --</option>
+                <option value="บิดา-มารดา">บิดา-มารดา</option>
+                <option value="บิดา">บิดา</option>
+                <option value="มารดา">มารดา</option>
+                <option value="ปู่-ย่า / ตา-ยาย">ปู่-ย่า / ตา-ยาย</option>
+                <option value="ญาติ">ญาติ</option>
+                <option value="คู่สมรส / ครอบครัวตนเอง">คู่สมรส / ครอบครัวตนเอง</option>
+                <option value="นายจ้าง / ที่ทำงาน">นายจ้าง / ที่ทำงาน</option>
+                <option value="อยู่คนเดียว">อยู่คนเดียว</option>
+                <option value="__custom__">อื่น ๆ (ระบุเอง)</option>
+              </select>
+              <input type="text" id="stu-living-with-custom" class="custom-extra-input" placeholder="ระบุผู้ที่อาศัยอยู่ด้วย">
+            </div>
+            <div class="field">
+              <label for="stu-house-no">บ้านเลขที่</label>
+              <input type="text" id="stu-house-no" placeholder="บ้านเลขที่">
+            </div>
+            <div class="field">
+              <label for="stu-moo">หมู่ที่</label>
+              <select id="stu-moo" data-custom-input="stu-moo-custom"></select>
+              <input type="text" id="stu-moo-custom" class="custom-extra-input" placeholder="ระบุหมู่ที่">
+            </div>
+            <div class="field">
+              <label for="stu-road">ถนน</label>
+              <input type="text" id="stu-road" placeholder="ถนน (ถ้าไม่มีขีด -)">
+            </div>
+            <div class="field">
+              <label for="stu-tambon">ตำบล / แขวง</label>
+              <input type="text" id="stu-tambon" placeholder="ตำบล / แขวง">
+            </div>
+            <div class="field">
+              <label for="stu-amphoe">อำเภอ / เขต</label>
+              <input type="text" id="stu-amphoe" placeholder="อำเภอ / เขต">
+            </div>
+            <div class="field">
+              <label for="stu-province">จังหวัด</label>
+              <select id="stu-province"></select>
+            </div>
+            <div class="field">
+              <label for="stu-zipcode">รหัสไปรษณีย์</label>
+              <input type="text" id="stu-zipcode" placeholder="เช่น 10200">
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 12px;">
+            <div class="field">
+              <label for="stu-phone">โทรศัพท์</label>
+              <input type="text" id="stu-phone" placeholder="เบอร์โทรศัพท์ติดต่อ">
+            </div>
+            <div class="field">
+              <label for="stu-email">1.12 E-mail address ของผู้เรียน (ถ้ามี)</label>
+              <input type="email" id="stu-email" placeholder="ระบุอีเมล (ถ้ามี)">
+            </div>
+          </div>
+
+          <!-- 1.4 ข้อมูลด้านสุขภาพ -->
+          <div class="sub-group-divider">1.4 ข้อมูลด้านสุขภาพ</div>
+          <div class="grid-4">
+            <div class="field">
+              <label for="stu-weight">น้ำหนัก (กิโลกรัม)</label>
+              <input type="number" id="stu-weight" min="10" max="250" step="0.5" placeholder="เช่น 55">
+            </div>
+            <div class="field">
+              <label for="stu-height">ส่วนสูง (เซนติเมตร)</label>
+              <input type="number" id="stu-height" min="50" max="230" step="0.5" placeholder="เช่น 165">
+            </div>
+            <div class="field">
+              <label for="stu-disease">โรคประจำตัว</label>
+              <select id="stu-disease" data-custom-input="stu-disease-custom">
+                <option value="ไม่มี" selected>ไม่มี</option>
+                <option value="ภูมิแพ้">ภูมิแพ้</option>
+                <option value="หอบหืด">หอบหืด</option>
+                <option value="โรคกระเพาะอาหาร">โรคกระเพาะอาหาร</option>
+                <option value="ไมเกรน">ไมเกรน</option>
+                <option value="ความดันโลหิตสูง">ความดันโลหิตสูง</option>
+                <option value="เบาหวาน">เบาหวาน</option>
+                <option value="สายตาสั้น / สายตาเอียง">สายตาสั้น / สายตาเอียง</option>
+                <option value="__custom__">มีโรคประจำตัวอื่น ๆ (ระบุ)</option>
+              </select>
+              <input type="text" id="stu-disease-custom" class="custom-extra-input" placeholder="ระบุโรคประจำตัว">
+            </div>
+            <div class="field">
+              <label for="stu-allergy">ประวัติการแพ้ยา/อาหาร</label>
+              <select id="stu-allergy" data-custom-input="stu-allergy-custom">
+                <option value="ไม่มี" selected>ไม่มี</option>
+                <option value="แพ้อาหารทะเล">แพ้อาหารทะเล</option>
+                <option value="แพ้นมวัว / ถั่ว">แพ้นมวัว / ถั่ว</option>
+                <option value="แพ้ยาปฏิชีวนะ">แพ้ยาปฏิชีวนะ</option>
+                <option value="แพ้ยาแก้ปวด / ลดไข้">แพ้ยาแก้ปวด / ลดไข้</option>
+                <option value="__custom__">แพ้ยา/อาหารอื่น ๆ (ระบุ)</option>
+              </select>
+              <input type="text" id="stu-allergy-custom" class="custom-extra-input" placeholder="ระบุยาหรืออาหารที่แพ้">
+            </div>
+          </div>
+
+          <!-- 1.5 - 1.7 วิชาที่ชอบ / ไม่ชอบ / ความสามารถพิเศษ -->
+          <div class="sub-group-divider">1.5 – 1.7 ความถนัดและความสนใจด้านการเรียน (เลือกจากรายวิชาหลักสูตร กศน. 2551)</div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="stu-fav1">1.5 วิชาที่ชอบ (ลำดับที่ 1)</label>
+              <select id="stu-fav1" class="subject-select" data-custom-input="stu-fav1-custom"></select>
+              <input type="text" id="stu-fav1-custom" class="custom-extra-input" placeholder="ระบุวิชาที่ชอบลำดับที่ 1">
+            </div>
+            <div class="field">
+              <label for="stu-fav2">1.5 วิชาที่ชอบ (ลำดับที่ 2)</label>
+              <select id="stu-fav2" class="subject-select" data-custom-input="stu-fav2-custom"></select>
+              <input type="text" id="stu-fav2-custom" class="custom-extra-input" placeholder="ระบุวิชาที่ชอบลำดับที่ 2">
+            </div>
+            <div class="field">
+              <label for="stu-dis1">1.6 วิชาที่ไม่ชอบ (ลำดับที่ 1)</label>
+              <select id="stu-dis1" class="subject-select" data-custom-input="stu-dis1-custom"></select>
+              <input type="text" id="stu-dis1-custom" class="custom-extra-input" placeholder="ระบุวิชาที่ไม่ชอบลำดับที่ 1">
+            </div>
+            <div class="field">
+              <label for="stu-dis2">1.6 วิชาที่ไม่ชอบ (ลำดับที่ 2)</label>
+              <select id="stu-dis2" class="subject-select" data-custom-input="stu-dis2-custom"></select>
+              <input type="text" id="stu-dis2-custom" class="custom-extra-input" placeholder="ระบุวิชาที่ไม่ชอบลำดับที่ 2">
+            </div>
+          </div>
+          <div class="field" style="margin-top: 12px;">
+            <label for="stu-special-skill">1.7 ความสามารถพิเศษ คือ</label>
+            <select id="stu-special-skill" data-custom-input="stu-special-skill-custom">
+              <option value="">-- เลือกความสามารถพิเศษ --</option>
+              <option value="ไม่มี">ไม่มี</option>
+              <option value="ด้านกีฬา">ด้านกีฬา</option>
+              <option value="ด้านศิลปะ / วาดภาพ / งานประดิษฐ์">ด้านศิลปะ / วาดภาพ / งานประดิษฐ์</option>
+              <option value="ด้านดนตรี / ร้องเพลง / นาฏศิลป์">ด้านดนตรี / ร้องเพลง / นาฏศิลป์</option>
+              <option value="ด้านคอมพิวเตอร์ / สื่อออนไลน์">ด้านคอมพิวเตอร์ / สื่อออนไลน์</option>
+              <option value="ด้านงานช่าง / อาชีพ">ด้านงานช่าง / อาชีพ</option>
+              <option value="ด้านการเกษตร">ด้านการเกษตร</option>
+              <option value="ด้านการทำอาหาร / คหกรรม">ด้านการทำอาหาร / คหกรรม</option>
+              <option value="ด้านการพูด / ความเป็นผู้นำ">ด้านการพูด / ความเป็นผู้นำ</option>
+              <option value="__custom__">อื่น ๆ (ระบุความสามารถพิเศษเอง)</option>
+            </select>
+            <input type="text" id="stu-special-skill-custom" class="custom-extra-input" placeholder="ระบุความสามารถพิเศษของผู้เรียน">
+          </div>
+
+          <!-- 1.8 - 1.11 คอมพิวเตอร์และอินเทอร์เน็ต -->
+          <div class="sub-group-divider">1.8 – 1.11 ข้อมูลการใช้คอมพิวเตอร์และอินเทอร์เน็ต</div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="stu-has-pc">1.8 ผู้เรียนมีคอมพิวเตอร์ใช้ที่บ้านหรือไม่</label>
+              <select id="stu-has-pc">
+                <option value="ไม่มี" selected>ไม่มี</option>
+                <option value="มี">มี</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="stu-has-internet">1.9 ที่บ้านผู้เรียนมีระบบอินเทอร์เน็ตหรือไม่</label>
+              <select id="stu-has-internet">
+                <option value="มี" selected>มี</option>
+                <option value="ไม่มี">ไม่มี</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 12px;">
+            <span class="field-label">1.10 ผู้เรียนใช้คอมพิวเตอร์ในชีวิตประจำวันอย่างไร (เลือกตอบได้มากกว่า 1 ข้อ)</span>
+            <div class="pc-usage-grid">
+              <div class="pc-usage-item">
+                <label class="choice-item">
+                  <input type="checkbox" id="use-search">
+                  <span>ใช้อินเทอร์เน็ตสืบค้นข้อมูล</span>
+                </label>
+                <span>(เวลา</span>
+                <select id="use-search-hr" class="inline-hour-select">
+                  <option value="">- ชม. -</option>
+                  <option value="1">1 ชม.</option>
+                  <option value="2">2 ชม.</option>
+                  <option value="3">3 ชม.</option>
+                  <option value="4">4 ชม.</option>
+                  <option value="5">5 ชม.</option>
+                  <option value="มากกว่า 5">มากกว่า 5</option>
+                </select>
+                <span>)</span>
+              </div>
+
+              <div class="pc-usage-item">
+                <label class="choice-item">
+                  <input type="checkbox" id="use-game">
+                  <span>เล่นเกมส์</span>
+                </label>
+                <span>(เวลา</span>
+                <select id="use-game-hr" class="inline-hour-select">
+                  <option value="">- ชม. -</option>
+                  <option value="1">1 ชม.</option>
+                  <option value="2">2 ชม.</option>
+                  <option value="3">3 ชม.</option>
+                  <option value="4">4 ชม.</option>
+                  <option value="5">5 ชม.</option>
+                  <option value="มากกว่า 5">มากกว่า 5</option>
+                </select>
+                <span>)</span>
+              </div>
+
+              <div class="pc-usage-item">
+                <label class="choice-item">
+                  <input type="checkbox" id="use-fb">
+                  <span>เล่น FaceBook</span>
+                </label>
+                <span>(เวลา</span>
+                <select id="use-fb-hr" class="inline-hour-select">
+                  <option value="">- ชม. -</option>
+                  <option value="1">1 ชม.</option>
+                  <option value="2">2 ชม.</option>
+                  <option value="3">3 ชม.</option>
+                  <option value="4">4 ชม.</option>
+                  <option value="5">5 ชม.</option>
+                  <option value="มากกว่า 5">มากกว่า 5</option>
+                </select>
+                <span>)</span>
+              </div>
+
+              <div class="pc-usage-item">
+                <label class="choice-item">
+                  <input type="checkbox" id="use-other">
+                  <span>โปรแกรมอื่น ๆ</span>
+                </label>
+                <select id="use-other-sel" data-custom-input="use-other-custom" style="flex:1; min-width:140px;">
+                  <option value="">-- เลือกการใช้งาน --</option>
+                  <option value="Line / TikTok / YouTube">Line / TikTok / YouTube</option>
+                  <option value="Canva / ตัดต่อวิดีโอ">Canva / ตัดต่อวิดีโอ</option>
+                  <option value="ดูภาพยนตร์ / ฟังเพลง">ดูภาพยนตร์ / ฟังเพลง</option>
+                  <option value="ทำงานเอกสาร / ค้าขายออนไลน์">ทำงานเอกสาร / ค้าขายออนไลน์</option>
+                  <option value="__custom__">ระบุเอง...</option>
+                </select>
+                <input type="text" id="use-other-custom" class="custom-extra-input" placeholder="ระบุการใช้งานอื่น ๆ">
+              </div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 14px;">
+            <span class="field-label">1.11 นักเรียนใช้โปรแกรมคอมพิวเตอร์ใดได้บ้าง (เลือกได้มากกว่า 1 ข้อ)</span>
+            <div class="choice-row">
+              <label class="choice-item"><input type="checkbox" id="prog-word"><span>Word</span></label>
+              <label class="choice-item"><input type="checkbox" id="prog-ppt"><span>Power point</span></label>
+              <label class="choice-item"><input type="checkbox" id="prog-excel"><span>Excel</span></label>
+              <label class="choice-item"><input type="checkbox" id="prog-ps"><span>Photoshop</span></label>
+              <label class="choice-item"><input type="checkbox" id="prog-other"><span>โปรแกรมอื่น ๆ</span></label>
+              <select id="prog-other-sel" data-custom-input="prog-other-custom" style="max-width: 240px;">
+                <option value="">-- เลือกโปรแกรมอื่น ๆ --</option>
+                <option value="Canva">Canva</option>
+                <option value="CapCut">CapCut</option>
+                <option value="Google Docs / Sheets">Google Docs / Sheets</option>
+                <option value="ใช้งานไม่ได้">ยังใช้งานโปรแกรมไม่ได้</option>
+                <option value="__custom__">ระบุโปรแกรมเอง...</option>
+              </select>
+              <input type="text" id="prog-other-custom" class="custom-extra-input" style="max-width: 240px;" placeholder="ระบุโปรแกรมอื่น ๆ">
+            </div>
+          </div>
+
+          <!-- 1.13 & 1.14 ความพร้อมในการพบกลุ่ม และคติประจำใจ -->
+          <div class="sub-group-divider">1.13 – 1.14 ความพร้อมในการร่วมเรียนรู้ในการพบกลุ่ม และคติประจำใจ</div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="stu-group-ready">1.13 ความพร้อมในการร่วมเรียนรู้ในการพบกลุ่ม</label>
+              <select id="stu-group-ready">
+                <option value="มี" selected>มี (พร้อมเข้าร่วมพบกลุ่ม)</option>
+                <option value="ไม่พร้อม">ไม่พร้อม</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="stu-motto">1.14 ผู้เรียนมีคติประจำใจ คือ</label>
+              <select id="stu-motto" data-custom-input="stu-motto-custom">
+                <option value="">-- เลือกคติประจำใจ --</option>
+                <option value="ความพยายามอยู่ที่ไหน ความสำเร็จอยู่ที่นั่น">ความพยายามอยู่ที่ไหน ความสำเร็จอยู่ที่นั่น</option>
+                <option value="ทำวันนี้ให้ดีที่สุด">ทำวันนี้ให้ดีที่สุด</option>
+                <option value="ไม่มีใครแก่เกินเรียน">ไม่มีใครแก่เกินเรียน</option>
+                <option value="ตนเป็นที่พึ่งแห่งตน">ตนเป็นที่พึ่งแห่งตน</option>
+                <option value="ขยัน ซื่อสัตย์ อดทน">ขยัน ซื่อสัตย์ อดทน</option>
+                <option value="__custom__">อื่น ๆ (ระบุคติประจำใจเอง)</option>
+              </select>
+              <input type="text" id="stu-motto-custom" class="custom-extra-input" placeholder="ระบุคติประจำใจของผู้เรียน">
+            </div>
+          </div>
+
+          <div class="conditional-box" id="unready-box">
+            <div class="grid-2">
+              <div class="field">
+                <label for="stu-unready-reason">กรณีที่ไม่พร้อม ให้เลือกเหตุผล เพราะ</label>
+                <select id="stu-unready-reason" data-custom-input="stu-unready-reason-custom">
+                  <option value="">-- เลือกเหตุผล (กรณีไม่พร้อม) --</option>
+                  <option value="ติดภารกิจทำงานประจำ / ทำงานเป็นกะ">ติดภารกิจทำงานประจำ / ทำงานเป็นกะ</option>
+                  <option value="ระยะทางไกล / ไม่สะดวกในการเดินทาง">ระยะทางไกล / ไม่สะดวกในการเดินทาง</option>
+                  <option value="ต้องดูแลบุตรหลาน / ผู้สูงอายุในครอบครัว">ต้องดูแลบุตรหลาน / ผู้สูงอายุในครอบครัว</option>
+                  <option value="มีปัญหาด้านสุขภาพร่างกาย">มีปัญหาด้านสุขภาพร่างกาย</option>
+                  <option value="__custom__">อื่น ๆ (ระบุเหตุผลเอง)</option>
+                </select>
+                <input type="text" id="stu-unready-reason-custom" class="custom-extra-input" placeholder="ระบุเหตุผลกรณีไม่พร้อมพบกลุ่ม">
+              </div>
+              <div class="field">
+                <label for="stu-unready-solution">การแก้ไขปัญหา จะกำหนดการเรียนรู้ โดย</label>
+                <select id="stu-unready-solution" data-custom-input="stu-unready-solution-custom">
+                  <option value="">-- เลือกแนวทางกำหนดการเรียนรู้ --</option>
+                  <option value="การเรียนรู้ด้วยตนเอง (กรต.) ผ่านใบงานและแบบฝึกหัด">การเรียนรู้ด้วยตนเอง (กรต.) ผ่านใบงานและแบบฝึกหัด</option>
+                  <option value="ศึกษาผ่านสื่อออนไลน์ / ห้องเรียนออนไลน์">ศึกษาผ่านสื่อออนไลน์ / ห้องเรียนออนไลน์</option>
+                  <option value="นัดหมายพบกลุ่มย่อยนอกเวลา">นัดหมายพบกลุ่มย่อยนอกเวลา</option>
+                  <option value="ทำรายงาน / โครงงานส่งตามกำหนด">ทำรายงาน / โครงงานส่งตามกำหนด</option>
+                  <option value="__custom__">อื่น ๆ (ระบุแนวทางเอง)</option>
+                </select>
+                <input type="text" id="stu-unready-solution-custom" class="custom-extra-input" placeholder="ระบุแนวทางกำหนดการเรียนรู้">
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 2. การวิเคราะห์ผู้เรียน (5 ด้าน 15 รายการย่อย ตามหน้า 2 ของไฟล์ PDF) -->
+        <fieldset class="form-group-box">
+          <legend>2. การวิเคราะห์ผู้เรียน (5 ด้าน 15 รายการย่อย)</legend>
+          <div id="eval-domains-container">
+            <!-- Generated dynamically with selectable options -->
+          </div>
+
+          <div class="field" style="margin-top: 16px;">
+            <label for="stu-teacher-comment-preset">เลือกข้อความความคิดเห็น/ข้อเสนอแนะของครูผู้สอน (หรือพิมพ์เพิ่มเติมด้านล่าง)</label>
+            <select id="stu-teacher-comment-preset">
+              <option value="">-- เลือกข้อความข้อเสนอแนะสำเร็จรูป --</option>
+              <option value="ผู้เรียนมีความตั้งใจใฝ่เรียนรู้ มีความพร้อมในการเรียนและสามารถพัฒนาตนเองตามหลักสูตรได้ดี">ผู้เรียนมีความตั้งใจใฝ่เรียนรู้ มีความพร้อมในการเรียนและสามารถพัฒนาตนเองตามหลักสูตรได้ดี</option>
+              <option value="ผู้เรียนมีความรับผิดชอบในระดับดี ควรส่งเสริมทักษะการคิดวิเคราะห์และการค้นคว้าเพิ่มเติม">ผู้เรียนมีความรับผิดชอบในระดับดี ควรส่งเสริมทักษะการคิดวิเคราะห์และการค้นคว้าเพิ่มเติม</option>
+              <option value="ผู้เรียนติดภารกิจงานประจำ ครูผู้สอนได้วางแผนมอบหมายการเรียนรู้ด้วยตนเอง (กรต.) และติดตามผลอย่างต่อเนื่อง">ผู้เรียนติดภารกิจงานประจำ ครูผู้สอนได้วางแผนมอบหมายการเรียนรู้ด้วยตนเอง (กรต.) และติดตามผลอย่างต่อเนื่อง</option>
+              <option value="ผู้เรียนควรได้รับการดูแลช่วยเหลือเสริมพื้นฐานวิชาหลัก และสร้างแรงจูงใจในการเรียนรู้เป็นรายบุคคล">ผู้เรียนควรได้รับการดูแลช่วยเหลือเสริมพื้นฐานวิชาหลัก และสร้างแรงจูงใจในการเรียนรู้เป็นรายบุคคล</option>
+            </select>
+            <textarea id="stu-teacher-comment" placeholder="ความคิดเห็นหรือข้อเสนอแนะของครูผู้สอน"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="btn-submit-student">บันทึกข้อมูลวิเคราะห์ผู้เรียน</button>
+          <button type="button" class="btn btn-secondary" id="btn-reset-form">ล้างแบบฟอร์ม</button>
+          <span id="form-status" class="inline-status" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- VIEW 2: STUDENT RECORDS & PRINTABLE OFFICIAL DOCUMENT -->
+    <section id="view-records" class="view-panel" aria-labelledby="records-heading">
+      <div class="card no-print">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="records-heading">ทะเบียนรายชื่อผู้เรียนที่บันทึกแล้ว</h2>
+            <p class="section-desc">ติ๊กเลือกรายชื่อ กรองตามระดับการศึกษา หรือสั่งพิมพ์แบบวิเคราะห์ผู้เรียนเสนอผู้บริหารเซ็นรับรอง</p>
+          </div>
+          <div class="btn-row">
+            <span id="records-sync-status" class="inline-status" aria-live="polite"></span>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-sheet">ดึงข้อมูลล่าสุด</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-go-add">+ เพิ่มข้อมูลผู้เรียน</button>
+          </div>
+        </div>
+
+        <div id="records-filter-wrap" class="records-filter-bar" style="display: none;">
+          <div class="field" style="min-width: 240px;">
+            <label for="filter-edu-level">กรองตามระดับการศึกษา</label>
+            <select id="filter-edu-level">
+              <option value="all">ทุกระดับการศึกษา</option>
+              <option value="ประถมศึกษา">ประถมศึกษา</option>
+              <option value="มัธยมศึกษาตอนต้น">มัธยมศึกษาตอนต้น</option>
+              <option value="มัธยมศึกษาตอนปลาย">มัธยมศึกษาตอนปลาย</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="records-empty" class="empty-state">
+          <h3>ยังไม่มีข้อมูลผู้เรียนในระบบ</h3>
+          <p>เริ่มต้นด้วยการกรอกแบบวิเคราะห์ผู้เรียนรายบุคคลในเมนูที่ 1 เพื่อสร้างเอกสารพิมพ์รับรอง</p>
+          <button type="button" class="btn btn-primary" id="btn-empty-add">เริ่มกรอกข้อมูลผู้เรียนคนแรก</button>
+        </div>
+
+        <div id="records-table-container" class="table-wrap" style="display: none;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 42px; text-align: center;">
+                  <input type="checkbox" id="chk-select-all" aria-label="เลือกผู้เรียนทั้งหมด">
+                </th>
+                <th style="width: 50px; text-align: center;">ลำดับ</th>
+                <th>ชื่อ - นามสกุล</th>
+                <th>ระดับการศึกษา</th>
+                <th style="text-align: center;">อายุ</th>
+                <th style="text-align: center;">พบกลุ่ม</th>
+                <th style="text-align: center;">ด้าน 1 ความรู้</th>
+                <th style="text-align: center;">ด้าน 2 สติปัญญา</th>
+                <th style="text-align: center;">ด้าน 3 พฤติกรรม</th>
+                <th style="text-align: center;">ด้าน 4 กาย/จิต</th>
+                <th style="text-align: center;">ด้าน 5 สังคม</th>
+                <th style="text-align: right;">การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="records-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRINT PREVIEW & EXECUTIVE SIGNATURE DOCUMENT -->
+      <div class="card" style="padding-bottom: var(--space-6);">
+        <div class="print-toolbar no-print">
+          <div class="print-controls-left">
+            <div class="field" style="min-width: 280px;">
+              <label for="print-mode">เลือกรูปแบบเอกสารสำหรับสั่งพิมพ์ (A4)</label>
+              <select id="print-mode">
+                <option value="individual">แบบวิเคราะห์ผู้เรียนรายบุคคล (เลือกพิมพ์รายคน - 2 หน้า)</option>
+                <option value="selected">แบบวิเคราะห์ผู้เรียนรายบุคคล (เฉพาะคนที่ติ๊กเลือกในตาราง)</option>
+                <option value="summary">แบบตารางสรุปรวมผู้เรียน (เสนอผู้บริหารเซ็นรับรอง)</option>
+              </select>
+            </div>
+            <div class="field" id="print-student-picker-wrap" style="min-width: 250px;">
+              <label for="print-student-id">เลือกผู้เรียนที่ต้องการพิมพ์</label>
+              <select id="print-student-id"></select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="btn-print-doc">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              พิมพ์เอกสารให้ผู้บริหารเซ็นรับรอง (A4)
+            </button>
+          </div>
+        </div>
+
+        <div class="paper-stage" id="printable-stage">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Subtle Admin Footer (keeps main 2-tab UI clean for teachers) -->
+    <footer class="admin-footer no-print">
+      <span id="footer-conn-label">สถานะการเก็บข้อมูล: บันทึกในเบราว์เซอร์ (พร้อมเชื่อมต่อ Google Sheets)</span>
+      <button type="button" class="link-btn" id="btn-open-admin-modal">สำหรับผู้ดูแลเว็บ: ตั้งค่าเชื่อม Google Sheets / รับโค้ด Code.gs</button>
+    </footer>
+
+  </main>
+
+  <!-- In-page Modal for Web Admin (Code.gs + Google Sheets Web App URL) -->
+  <div class="modal-backdrop" id="admin-setup-modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+    <div class="modal-dialog">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title" id="admin-modal-title">ตั้งค่าเชื่อมต่อ Google Sheets สำหรับผู้ดูแลเว็บไซต์</h2>
+          <p class="section-desc">เมนูหลักแสดงเฉพาะ 2 แท็บสำหรับครูผู้สอน ส่วนหน้าต่างนี้ใช้สำหรับผู้ดูแลระบบนำโค้ดไปผูกกับ Google Sheets</p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-close-admin-modal">ปิดหน้าต่าง</button>
+      </div>
+
+      <div class="field" style="margin-bottom: 14px;">
+        <label for="gas-url-input">ลิงก์ Google Apps Script Web App URL (ลงท้ายด้วย /exec)</label>
+        <div class="btn-row">
+          <input type="text" id="gas-url-input" style="flex: 1; min-width: 240px;" placeholder="วางลิงก์ที่ได้จากการ Deploy บน Google Apps Script ที่ลงท้ายด้วย /exec">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-save-gas-url">บันทึกและทดสอบเชื่อมต่อ</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-gas-url">ล้างค่า</button>
+        </div>
+        <span id="gas-modal-status" class="inline-status" aria-live="polite"></span>
+      </div>
+
+      <div style="font-size: 13.5px; color: var(--muted); background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+        <strong>คำแนะนำเมื่อนำไปใส่เว็บไซต์ให้ครูหลายคนกรอกพร้อมกัน:</strong><br>
+        1. เปิดไฟล์ Google Sheet ที่ต้องการใช้เก็บข้อมูล ไปที่ <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong> วางโค้ด <code>Code.gs</code> ด้านล่าง แล้วกด <strong>Deploy &gt; New deployment &gt; Web app</strong> (ตั้งสิทธิ์ Who has access เป็น <strong>Anyone</strong>)<br>
+        2. ก่อนอัปโหลดไฟล์ <code>index.html</code> ขึ้นเว็บไซต์สถานศึกษา ให้เปิดโค้ดไฟล์นี้แล้วนำลิงก์ <code>/exec</code> ไปใส่ในบรรทัด <code>var GOOGLE_SHEET_WEBAPP_URL = "";</code> ด้านบนสุดของส่วน <code>&lt;script&gt;</code> เพื่อให้ครูทุกเครื่องส่งข้อมูลเข้า Google Sheet เดียวกันอัตโนมัติ (หรือฝังลิงก์ Web App ลงในหน้าเว็บไซต์โดยตรงก็ได้เช่นกัน)
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <strong style="font-size: 14px;">โค้ดสำหรับวางในไฟล์ Code.gs บน Google Sheet</strong>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-gas-code">คัดลอกโค้ด Code.gs</button>
+      </div>
+      <pre class="code-box" id="gas-code-preview"></pre>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /**
+       * ตั้งค่าสำหรับนำไฟล์ขึ้นเว็บไซต์สถานศึกษา:
+       * นำลิงก์ Web App URL (ที่ลงท้ายด้วย /exec จากการ Deploy บน Google Apps Script)
+       * มาวางในเครื่องหมายคำพูดด้านล่างนี้ เพื่อให้ครูทุกคนที่เข้าหน้าเว็บส่งข้อมูลเข้า Google Sheet เดียวกันอัตโนมัติ
+       */
+      var GOOGLE_SHEET_WEBAPP_URL = "";
+
+      var THAI_PROVINCES = [
+        'กระบี่', 'กรุงเทพมหานคร', 'กาญจนบุรี', 'กาฬสินธุ์', 'กำแพงเพชร', 'ขอนแก่น', 'จันทบุรี',
+        'ฉะเชิงเทรา', 'ชลบุรี', 'ชัยนาท', 'ชัยภูมิ', 'ชุมพร', 'เชียงราย', 'เชียงใหม่', 'ตรัง', 'ตราด',
+        'ตาก', 'นครนายก', 'นครปฐม', 'นครพนม', 'นครราชสีมา', 'นครศรีธรรมราช', 'นครสวรรค์', 'นนทบุรี',
+        'นราธิวาส', 'น่าน', 'บึงกาฬ', 'บุรีรัมย์', 'ปทุมธานี', 'ประจวบคีรีขันธ์', 'ปราจีนบุรี', 'ปัตตานี',
+        'พระนครศรีอยุธยา', 'พะเยา', 'พังงา', 'พัทลุง', 'พิจิตร', 'พิษณุโลก', 'เพชรบุรี', 'เพชรบูรณ์',
+        'แพร่', 'ภูเก็ต', 'มหาสารคาม', 'มุกดาหาร', 'แม่ฮ่องสอน', 'ยโสธร', 'ยะลา', 'ร้อยเอ็ด', 'ระนอง',
+        'ระยอง', 'ราชบุรี', 'ลพบุรี', 'ลำปาง', 'ลำพูน', 'เลย', 'ศรีสะเกษ', 'สกลนคร', 'สงขลา', 'สตูล',
+        'สมุทรปราการ', 'สมุทรสงคราม', 'สมุทรสาคร', 'สระแก้ว', 'สระบุรี', 'สิงห์บุรี', 'สุโขทัย',
+        'สุพรรณบุรี', 'สุราษฎร์ธานี', 'สุรินทร์', 'หนองคาย', 'หนองบัวลำภู', 'อ่างทอง', 'อำนาจเจริญ',
+        'อุดรธานี', 'อุตรดิตถ์', 'อุทัยธานี', 'อุบลราชธานี'
+      ];
+
+      var NFE_SUBJECTS = [
+        'ทักษะการเรียนรู้',
+        'ภาษาไทย',
+        'ภาษาอังกฤษ',
+        'คณิตศาสตร์',
+        'วิทยาศาสตร์',
+        'ช่องทางการพัฒนาอาชีพ',
+        'ทักษะการพัฒนาอาชีพ',
+        'การพัฒนาตนเอง ชุมชน สังคม',
+        'สังคมศึกษา',
+        'ศาสนาและหน้าที่พลเมือง',
+        'สุขศึกษา พลศึกษา',
+        'ศิลปศึกษา',
+        'คอมพิวเตอร์',
+        'เศรษฐกิจพอเพียง'
+      ];
+
+      var EVAL_DOMAINS = [
+        {
+          id: 'd1',
+          thaiNum: '๑',
+          num: '1',
+          title: 'ด้านความรู้ ความสามารถ และประสบการณ์',
+          notePresets: [
+            'มีความรู้พื้นฐานดี มีสมาธิและแก้ปัญหาได้เหมาะสม',
+            'มีความรู้ระดับปานกลาง ควรเสริมทักษะการแก้ปัญหาเพิ่มเติม',
+            'ควรสอนเสริมความรู้พื้นฐานและฝึกสมาธิในการเรียน'
+          ],
+          items: [
+            { key: 'd1_1', label: '1) ความรู้พื้นฐาน', thaiLabel: '๑) ความรู้พื้นฐาน' },
+            { key: 'd1_2', label: '2) ความสามารถในการแก้ปัญหา', thaiLabel: '๒) ความสามารถในการแก้ปัญหา' },
+            { key: 'd1_3', label: '3) ความสนใจ / สมาธิในการเรียน', thaiLabel: '๓) ความสนใจ / สมาธิในการเรียน' }
+          ]
+        },
+        {
+          id: 'd2',
+          thaiNum: '๒',
+          num: '2',
+          title: 'ความพร้อมด้านสติปัญญา',
+          notePresets: [
+            'มีความคิดสร้างสรรค์ มีเหตุผล และเรียนรู้ได้เร็ว',
+            'สามารถเรียนรู้ได้ตามเกณฑ์ ควรส่งเสริมการคิดริเริ่มสร้างสรรค์',
+            'ควรใช้สื่อการสอนที่เข้าใจง่ายและติดตามการเรียนรู้เป็นรายบุคคล'
+          ],
+          items: [
+            { key: 'd2_1', label: '1) ความคิดริเริ่ม สร้างสรรค์', thaiLabel: '๑) ความคิดริเริ่ม สร้างสรรค์' },
+            { key: 'd2_2', label: '2) ความมีเหตุผล', thaiLabel: '๒) ความมีเหตุผล' },
+            { key: 'd2_3', label: '3) ความสามารถในการเรียนรู้', thaiLabel: '๓) ความสามารถในการเรียนรู้' }
+          ]
+        },
+        {
+          id: 'd3',
+          thaiNum: '๓',
+          num: '3',
+          title: 'ความพร้อมด้านพฤติกรรม',
+          notePresets: [
+            'กล้าแสดงออก ควบคุมอารมณ์ได้ดี มีความขยันหมั่นเพียร',
+            'มีความตั้งใจดี ควรส่งเสริมความมั่นใจในการแสดงออก',
+            'ควรเสริมแรงจูงใจและติดตามความสม่ำเสมอในการส่งงาน'
+          ],
+          items: [
+            { key: 'd3_1', label: '1) กล้าแสดงออก', thaiLabel: '๑) กล้าแสดงออก' },
+            { key: 'd3_2', label: '2) การควบคุมอารมณ์', thaiLabel: '๒) การควบคุมอารมณ์' },
+            { key: 'd3_3', label: '3) ความมุ่งมั่นขยันหมั่นเพียร', thaiLabel: '๓) ความมุ่งมั่นขยันหมั่นเพียร' }
+          ]
+        },
+        {
+          id: 'd4',
+          thaiNum: '๔',
+          num: '4',
+          title: 'ความพร้อมด้านร่างกาย จิตใจ',
+          notePresets: [
+            'สุขภาพร่างกายแข็งแรงสมบูรณ์ มีสุขภาพจิตดี',
+            'สุขภาพโดยรวมปกติ ควรดูแลพักผ่อนให้เพียงพอ',
+            'ควรดูแลสุขภาพและให้คำปรึกษาเสริมสร้างกำลังใจ'
+          ],
+          items: [
+            { key: 'd4_1', label: '1) สุขภาพร่างกายสมบูรณ์', thaiLabel: '๑) สุขภาพร่างกายสมบูรณ์' },
+            { key: 'd4_2', label: '2) การเจริญเติบโตสมวัย', thaiLabel: '๒) การเจริญเติบโตสมวัย' },
+            { key: 'd4_3', label: '3) มีสุขภาพจิตดี', thaiLabel: '๓) มีสุขภาพจิตดี' }
+          ]
+        },
+        {
+          id: 'd5',
+          thaiNum: '๕',
+          num: '5',
+          title: 'ความพร้อมด้านสังคม',
+          notePresets: [
+            'ปรับตัวเข้ากับผู้อื่นได้ดี มีน้ำใจและเคารพกฎกติกา',
+            'เข้ากับเพื่อนร่วมกลุ่มได้ ควรส่งเสริมกิจกรรมกลุ่มเพิ่มเติม',
+            'ควรส่งเสริมการมีส่วนร่วมในกิจกรรมกลุ่มและระเบียบวินัย'
+          ],
+          items: [
+            { key: 'd5_1', label: '1) การปรับตัวเข้ากับผู้อื่น', thaiLabel: '๑) การปรับตัวเข้ากับผู้อื่น' },
+            { key: 'd5_2', label: '2) การช่วยเหลือ เสียสละ แบ่งปัน', thaiLabel: '๒) การช่วยเหลือ เสียสละ แบ่งปัน' },
+            { key: 'd5_3', label: '3) มีระเบียบวินัย เคารพกฎ กติกา', thaiLabel: '๓) มีระเบียบวินัย เคารพกฎ กติกา' }
+          ]
+        }
+      ];
+
+      var storage = {
+        get: function (key, fallback) {
+          try {
+            var raw = window.localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : fallback;
+          } catch (e) {
+            return fallback;
+          }
+        },
+        set: function (key, value) {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(value));
+          } catch (e) {}
+        },
+        remove: function (key) {
+          try {
+            window.localStorage.removeItem(key);
+          } catch (e) {}
+        }
+      };
+
+      var STORAGE_STUDENTS = 'ila_nfe2551_students_v2';
+      var STORAGE_CONFIG = 'ila_nfe2551_config_v2';
+      var STORAGE_GAS_URL = 'ila_gas_webapp_url_v1';
+
+      var isNativeGas = (typeof window.google !== 'undefined' && window.google.script && window.google.script.run);
+
+      var DEFAULT_DIRECTOR_POS = 'ผู้อำนวยการ สกร.ระดับอำเภอยี่งอ';
+
+      var savedConfig = storage.get(STORAGE_CONFIG, {
+        school: '',
+        term: '1',
+        year: '2569',
+        teacher: '',
+        director: '',
+        directorPos: DEFAULT_DIRECTOR_POS
+      });
+      if (!savedConfig.directorPos || savedConfig.directorPos === 'ผู้อำนวยการสถานศึกษา') {
+        savedConfig.directorPos = DEFAULT_DIRECTOR_POS;
+      }
+
+      var state = {
+        students: storage.get(STORAGE_STUDENTS, []),
+        config: savedConfig,
+        gasUrl: (GOOGLE_SHEET_WEBAPP_URL && GOOGLE_SHEET_WEBAPP_URL.trim()) || storage.get(STORAGE_GAS_URL, ''),
+        selectedIds: {},
+        pendingDeleteId: null,
+        manualSummaryTouched: {}
+      };
+
+      var GAS_CODE_TEMPLATE = [
+        '/**',
+        ' * ระบบวิเคราะห์ผู้เรียนรายบุคคล (หลักสูตร กศน. พ.ศ. 2551) - Google Sheets Backend',
+        ' * วิธีใช้: เปิด Google Sheet > ส่วนขยาย (Extensions) > Apps Script > วางโค้ดนี้ใน Code.gs',
+        ' * จากนั้นกด Deploy > New deployment > Web app (ตั้งค่า Who has access: Anyone)',
+        ' */',
+        '',
+        'var SHEET_STUDENTS = "Students_NFE2551";',
+        'var SHEET_CONFIG = "Config";',
+        '',
+        'function ensureSheets_() {',
+        '  var ss = SpreadsheetApp.getActiveSpreadsheet();',
+        '  var stuSheet = ss.getSheetByName(SHEET_STUDENTS);',
+        '  if (!stuSheet) {',
+        '    stuSheet = ss.insertSheet(SHEET_STUDENTS);',
+        '    stuSheet.appendRow([',
+        '      "id", "code", "eduLevel", "fullName", "age", "birthDateText",',
+        '      "livingWith", "addressText", "phone", "email",',
+        '      "weight", "height", "disease", "allergy",',
+        '      "favSubjects", "dislikeSubjects", "specialSkill",',
+        '      "hasPC", "hasInternet", "pcDailyUsage", "pcPrograms",',
+        '      "groupReady", "unreadyReason", "unreadySolution", "motto",',
+        '      "sumD1", "noteD1", "sumD2", "noteD2", "sumD3", "noteD3",',
+        '      "sumD4", "noteD4", "sumD5", "noteD5", "teacherComment",',
+        '      "rawJson", "updatedAt"',
+        '    ]);',
+        '  }',
+        '  var cfgSheet = ss.getSheetByName(SHEET_CONFIG);',
+        '  if (!cfgSheet) {',
+        '    cfgSheet = ss.insertSheet(SHEET_CONFIG);',
+        '    cfgSheet.appendRow(["key", "value"]);',
+        '  }',
+        '  return { stuSheet: stuSheet, cfgSheet: cfgSheet };',
+        '}',
+        '',
+        'function doGet(e) {',
+        '  if (e && e.parameter && e.parameter.action === "list") {',
+        '    return ContentService.createTextOutput(JSON.stringify({ ok: true, data: getInitialData() }))',
+        '      .setMimeType(ContentService.MimeType.JSON);',
+        '  }',
+        '  return HtmlService.createHtmlOutputFromFile("index")',
+        '    .setTitle("ระบบวิเคราะห์ผู้เรียนรายบุคคล (กศน. 2551)")',
+        '    .addMetaTag("viewport", "width=device-width, initial-scale=1")',
+        '    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);',
+        '}',
+        '',
+        'function doPost(e) {',
+        '  try {',
+        '    var body = JSON.parse(e.postData.contents || "{}");',
+        '    if (body.action === "saveStudent") {',
+        '      saveStudentRecord(body.record);',
+        '    } else if (body.action === "deleteStudent") {',
+        '      deleteStudentRecord(body.id);',
+        '    } else if (body.action === "saveConfig") {',
+        '      saveSchoolConfig(body.config);',
+        '    }',
+        '    return ContentService.createTextOutput(JSON.stringify({ ok: true, data: getInitialData() }))',
+        '      .setMimeType(ContentService.MimeType.JSON);',
+        '  } catch (err) {',
+        '    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))',
+        '      .setMimeType(ContentService.MimeType.JSON);',
+        '  }',
+        '}',
+        '',
+        'function getInitialData() {',
+        '  var sheets = ensureSheets_();',
+        '  var rows = sheets.stuSheet.getDataRange().getValues();',
+        '  var headers = rows[0] || [];',
+        '  var jsonCol = headers.indexOf("rawJson");',
+        '  var students = [];',
+        '  for (var i = 1; i < rows.length; i++) {',
+        '    if (!rows[i][0]) continue;',
+        '    if (jsonCol >= 0 && rows[i][jsonCol]) {',
+        '      try {',
+        '        students.push(JSON.parse(rows[i][jsonCol]));',
+        '        continue;',
+        '      } catch (err) {}',
+        '    }',
+        '    var fallbackObj = {};',
+        '    for (var c = 0; c < headers.length; c++) fallbackObj[headers[c]] = rows[i][c];',
+        '    students.push(fallbackObj);',
+        '  }',
+        '  var cfgRows = sheets.cfgSheet.getDataRange().getValues();',
+        '  var config = {};',
+        '  for (var j = 1; j < cfgRows.length; j++) {',
+        '    if (cfgRows[j][0]) config[cfgRows[j][0]] = cfgRows[j][1];',
+        '  }',
+        '  return { students: students, config: config };',
+        '}',
+        '',
+        'function saveStudentRecord(r) {',
+        '  var sheets = ensureSheets_();',
+        '  var sheet = sheets.stuSheet;',
+        '  var data = sheet.getDataRange().getValues();',
+        '  var birthText = [r.birthDay, r.birthMonth, r.birthYear].filter(Boolean).join(" ");',
+        '  var addrText = ["บ้านเลขที่ " + (r.houseNo || "-"), "ม." + (r.moo || "-"), "ต." + (r.tambon || "-"), "อ." + (r.amphoe || "-"), "จ." + (r.province || "-"), r.zipcode || ""].join(" ");',
+        '  var favText = [r.fav1, r.fav2].filter(Boolean).join(", ");',
+        '  var disText = [r.dis1, r.dis2].filter(Boolean).join(", ");',
+        '  var pcUseList = [];',
+        '  if (r.useSearch) pcUseList.push("สืบค้น(" + (r.useSearchHr || "-") + "ชม.)");',
+        '  if (r.useGame) pcUseList.push("เล่นเกมส์(" + (r.useGameHr || "-") + "ชม.)");',
+        '  if (r.useFb) pcUseList.push("FaceBook(" + (r.useFbHr || "-") + "ชม.)");',
+        '  if (r.useOther) pcUseList.push("อื่นๆ:" + (r.useOtherText || ""));',
+        '  var progList = [];',
+        '  if (r.progWord) progList.push("Word");',
+        '  if (r.progPpt) progList.push("Power point");',
+        '  if (r.progExcel) progList.push("Excel");',
+        '  if (r.progPs) progList.push("Photoshop");',
+        '  if (r.progOther) progList.push(r.progOtherText || "อื่นๆ");',
+        '  var ev = r.eval || {};',
+        '  var rowValues = [',
+        '    r.id, r.code || "", r.eduLevel || "", r.fullName || "", r.age || "", birthText,',
+        '    r.livingWith || "", addrText, r.phone || "", r.email || "",',
+        '    r.weight || "", r.height || "", r.disease || "", r.allergy || "",',
+        '    favText, disText, r.specialSkill || "",',
+        '    r.hasPC || "", r.hasInternet || "", pcUseList.join(", "), progList.join(", "),',
+        '    r.groupReady || "", r.unreadyReason || "", r.unreadySolution || "", r.motto || "",',
+        '    ev.sum_d1 || "", ev.note_d1 || "", ev.sum_d2 || "", ev.note_d2 || "",',
+        '    ev.sum_d3 || "", ev.note_d3 || "", ev.sum_d4 || "", ev.note_d4 || "",',
+        '    ev.sum_d5 || "", ev.note_d5 || "", r.teacherComment || "",',
+        '    JSON.stringify(r), new Date().toISOString()',
+        '  ];',
+        '  for (var i = 1; i < data.length; i++) {',
+        '    if (String(data[i][0]) === String(r.id)) {',
+        '      sheet.getRange(i + 1, 1, 1, rowValues.length).setValues([rowValues]);',
+        '      return true;',
+        '    }',
+        '  }',
+        '  sheet.appendRow(rowValues);',
+        '  return true;',
+        '}',
+        '',
+        'function deleteStudentRecord(id) {',
+        '  var sheets = ensureSheets_();',
+        '  var sheet = sheets.stuSheet;',
+        '  var data = sheet.getDataRange().getValues();',
+        '  for (var i = data.length - 1; i >= 1; i--) {',
+        '    if (String(data[i][0]) === String(id)) {',
+        '      sheet.deleteRow(i + 1);',
+        '      return true;',
+        '    }',
+        '  }',
+        '  return false;',
+        '}',
+        '',
+        'function saveSchoolConfig(config) {',
+        '  var sheets = ensureSheets_();',
+        '  var sheet = sheets.cfgSheet;',
+        '  sheet.clearContents();',
+        '  sheet.appendRow(["key", "value"]);',
+        '  var keys = Object.keys(config || {});',
+        '  for (var i = 0; i < keys.length; i++) {',
+        '    sheet.appendRow([keys[i], config[keys[i]]]);',
+        '  }',
+        '  return true;',
+        '}'
+      ].join('\n');
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function escapeHtml(val) {
+        return String(val == null ? '' : val)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getRadioVal(name, fallback) {
+        var el = document.querySelector('input[name="' + name + '"]:checked');
+        return el ? el.value : fallback;
+      }
+
+      function setRadioVal(name, value) {
+        var el = document.querySelector('input[name="' + name + '"][value="' + String(value) + '"]');
+        if (el) el.checked = true;
+      }
+
+      // Populate dynamic select lists (Age, Birth Day, Birth Year, Moo, Province, NFE Subjects)
+      function populateStaticSelectOptions() {
+        var ageHtml = '<option value="">-- เลือกอายุ --</option>';
+        for (var a = 12; a <= 80; a++) {
+          ageHtml += '<option value="' + a + '">' + a + ' ปี</option>';
+        }
+        ageHtml += '<option value="__custom__">ระบุอายุเอง...</option>';
+        byId('stu-age').innerHTML = ageHtml;
+
+        var dayHtml = '<option value="">-- เลือกวันที่ --</option>';
+        for (var d = 1; d <= 31; d++) {
+          dayHtml += '<option value="' + d + '">' + d + '</option>';
+        }
+        byId('stu-birth-day').innerHTML = dayHtml;
+
+        var yrHtml = '<option value="">-- เลือก พ.ศ. เกิด --</option>';
+        for (var y = 2558; y >= 2490; y--) {
+          yrHtml += '<option value="' + y + '">' + y + '</option>';
+        }
+        yrHtml += '<option value="__custom__">ระบุ พ.ศ. เอง...</option>';
+        byId('stu-birth-year').innerHTML = yrHtml;
+
+        var mooHtml = '<option value="">-- เลือกหมู่ที่ --</option><option value="-">- (ไม่มีหมู่)</option>';
+        for (var m = 1; m <= 30; m++) {
+          mooHtml += '<option value="' + m + '">หมู่ที่ ' + m + '</option>';
+        }
+        mooHtml += '<option value="__custom__">ระบุเอง...</option>';
+        byId('stu-moo').innerHTML = mooHtml;
+
+        var provHtml = '<option value="">-- เลือกจังหวัด --</option>' +
+          THAI_PROVINCES.map(function (p) {
+            return '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>';
+          }).join('');
+        byId('stu-province').innerHTML = provHtml;
+
+        var subjHtml = '<option value="">-- เลือกรายวิชา --</option>' +
+          NFE_SUBJECTS.map(function (s) {
+            return '<option value="' + escapeHtml(s) + '">' + escapeHtml(s) + '</option>';
+          }).join('') +
+          '<option value="ไม่มี">ไม่มี</option>' +
+          '<option value="__custom__">วิชาอื่น ๆ (ระบุเอง)</option>';
+
+        document.querySelectorAll('.subject-select').forEach(function (sel) {
+          sel.innerHTML = subjHtml;
+        });
+      }
+
+      // Bind Select + Custom Text Input Toggle
+      function bindCustomSelectToggles(root) {
+        (root || document).querySelectorAll('select[data-custom-input]').forEach(function (sel) {
+          sel.addEventListener('change', function () {
+            var inputId = sel.getAttribute('data-custom-input');
+            var customEl = byId(inputId);
+            if (!customEl) return;
+            var isCustom = sel.value === '__custom__';
+            customEl.classList.toggle('visible', isCustom);
+            if (isCustom) customEl.focus();
+          });
+        });
+      }
+
+      function getSelectOrCustom(selId, customId) {
+        var sel = byId(selId);
+        if (!sel) return '';
+        if (sel.value === '__custom__') {
+          var customEl = byId(customId);
+          return customEl ? customEl.value.trim() : '';
+        }
+        return sel.value.trim();
+      }
+
+      function setSelectOrCustom(selId, customId, savedVal, defaultVal) {
+        var sel = byId(selId);
+        var customEl = customId ? byId(customId) : null;
+        var val = (savedVal != null && String(savedVal).trim() !== '') ? String(savedVal).trim() : (defaultVal || '');
+
+        if (!sel) return;
+        var hasMatchingOption = Array.prototype.some.call(sel.options, function (opt) {
+          return opt.value !== '__custom__' && opt.value === val;
+        });
+
+        if (hasMatchingOption) {
+          sel.value = val;
+          if (customEl) {
+            customEl.value = '';
+            customEl.classList.remove('visible');
+          }
+        } else if (val !== '' && customEl) {
+          sel.value = '__custom__';
+          customEl.value = val;
+          customEl.classList.add('visible');
+        } else {
+          sel.value = defaultVal || '';
+          if (customEl) {
+            customEl.value = '';
+            customEl.classList.remove('visible');
+          }
+        }
+      }
+
+      // Build Section 2 Assessment UI (5 Domains, 15 Sub-items + Selectable Note Presets)
+      function buildEvalFormDomains() {
+        var container = byId('eval-domains-container');
+        container.innerHTML = EVAL_DOMAINS.map(function (dom) {
+          var subRows = dom.items.map(function (item) {
+            return '<div class="eval-subitem-row">' +
+              '<div class="eval-subitem-label">' + escapeHtml(item.label) + '</div>' +
+              '<div class="rating-options" role="radiogroup" aria-label="' + escapeHtml(item.label) + '">' +
+                '<label class="rating-pill"><input type="radio" name="ev-' + item.key + '" data-dom="' + dom.id + '" value="3" checked><span>ดี (3)</span></label>' +
+                '<label class="rating-pill"><input type="radio" name="ev-' + item.key + '" data-dom="' + dom.id + '" value="2"><span>ปานกลาง (2)</span></label>' +
+                '<label class="rating-pill"><input type="radio" name="ev-' + item.key + '" data-dom="' + dom.id + '" value="1"><span>ปรับปรุง (1)</span></label>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          var presetOpts = '<option value="">-- เลือกการแปลข้อมูล / สิ่งที่ควรปรับปรุง --</option>' +
+            dom.notePresets.map(function (txt) {
+              return '<option value="' + escapeHtml(txt) + '">' + escapeHtml(txt) + '</option>';
+            }).join('') +
+            '<option value="__custom__">อื่น ๆ (ระบุเอง)</option>';
+
+          return '<div class="eval-domain-card">' +
+            '<div class="eval-domain-head">' +
+              '<span class="eval-domain-title">ด้านที่ ' + dom.num + ': ' + escapeHtml(dom.title) + '</span>' +
+            '</div>' +
+            '<div class="eval-subitems">' + subRows + '</div>' +
+            '<div class="eval-domain-footer">' +
+              '<div class="field">' +
+                '<label for="ev-sum-' + dom.id + '">สรุปผลการประเมิน (ด้านที่ ' + dom.num + ')</label>' +
+                '<select id="ev-sum-' + dom.id + '" data-dom-sum="' + dom.id + '">' +
+                  '<option value="ดี" selected>ดี</option>' +
+                  '<option value="ปานกลาง">ปานกลาง</option>' +
+                  '<option value="ปรับปรุง">ปรับปรุง</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="field">' +
+                '<label for="ev-note-sel-' + dom.id + '">การแปลข้อมูล และ/หรือ สิ่งที่ควรปรับปรุง/แก้ไข</label>' +
+                '<select id="ev-note-sel-' + dom.id + '" data-custom-input="ev-note-custom-' + dom.id + '">' + presetOpts + '</select>' +
+                '<input type="text" id="ev-note-custom-' + dom.id + '" class="custom-extra-input" placeholder="ระบุการแปลข้อมูล หรือสิ่งที่ควรปรับปรุง/แก้ไข">' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+        bindCustomSelectToggles(container);
+
+        container.querySelectorAll('input[type="radio"][data-dom]').forEach(function (radio) {
+          radio.addEventListener('change', function () {
+            var domId = radio.getAttribute('data-dom');
+            if (state.manualSummaryTouched[domId]) return;
+            autoSummarizeDomain(domId);
+          });
+        });
+
+        container.querySelectorAll('select[data-dom-sum]').forEach(function (sel) {
+          sel.addEventListener('change', function () {
+            state.manualSummaryTouched[sel.getAttribute('data-dom-sum')] = true;
+          });
+        });
+      }
+
+      function autoSummarizeDomain(domId) {
+        var dom = EVAL_DOMAINS.find(function (d) { return d.id === domId; });
+        if (!dom) return;
+        var sum = 0;
+        dom.items.forEach(function (item) {
+          sum += Number(getRadioVal('ev-' + item.key, 3));
+        });
+        var avg = sum / dom.items.length;
+        var summaryWord = 'ปานกลาง';
+        if (avg >= 2.5) summaryWord = 'ดี';
+        else if (avg < 1.67) summaryWord = 'ปรับปรุง';
+        byId('ev-sum-' + domId).value = summaryWord;
+      }
+
+      // Teacher comment preset filler
+      byId('stu-teacher-comment-preset').addEventListener('change', function () {
+        var val = this.value;
+        if (val) {
+          byId('stu-teacher-comment').value = val;
+        }
+      });
+
+      // Auto-check checkbox when hour/program dropdown is chosen
+      ['search', 'game', 'fb'].forEach(function (k) {
+        byId('use-' + k + '-hr').addEventListener('change', function () {
+          if (this.value) byId('use-' + k).checked = true;
+        });
+      });
+
+      byId('use-other-sel').addEventListener('change', function () {
+        if (this.value) byId('use-other').checked = true;
+      });
+
+      byId('prog-other-sel').addEventListener('change', function () {
+        if (this.value) byId('prog-other').checked = true;
+      });
+
+      // Navigation Tabs
+      var tabButtons = document.querySelectorAll('.tab-btn');
+      var viewPanels = document.querySelectorAll('.view-panel');
+
+      function switchTab(targetId) {
+        tabButtons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-tab') === targetId);
+        });
+        viewPanels.forEach(function (panel) {
+          panel.classList.toggle('active', panel.id === targetId);
+        });
+        if (targetId === 'view-records') {
+          renderRecordsTable();
+          renderPrintableDocument();
+        }
+      }
+
+      tabButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          switchTab(btn.getAttribute('data-tab'));
+        });
+      });
+
+      // School Config Helpers
+      function populateConfigInputs() {
+        byId('cfg-school').value = state.config.school || '';
+        byId('cfg-term').value = state.config.term || '1';
+        setSelectOrCustom('cfg-year', 'cfg-year-custom', state.config.year || '2569', '2569');
+        byId('cfg-teacher').value = state.config.teacher || '';
+        byId('cfg-director').value = state.config.director || '';
+        setSelectOrCustom('cfg-director-pos', 'cfg-director-pos-custom', state.config.directorPos || DEFAULT_DIRECTOR_POS, DEFAULT_DIRECTOR_POS);
+      }
+
+      function readConfigInputs() {
+        return {
+          school: byId('cfg-school').value.trim(),
+          term: byId('cfg-term').value,
+          year: getSelectOrCustom('cfg-year', 'cfg-year-custom'),
+          teacher: byId('cfg-teacher').value.trim(),
+          director: byId('cfg-director').value.trim(),
+          directorPos: getSelectOrCustom('cfg-director-pos', 'cfg-director-pos-custom') || DEFAULT_DIRECTOR_POS
+        };
+      }
+
+      function updateConnectionFooter() {
+        var lbl = byId('footer-conn-label');
+        if (!lbl) return;
+        if (isNativeGas) {
+          lbl.textContent = 'สถานะการเก็บข้อมูล: เชื่อมต่อ Google Sheets โดยตรง (Google Apps Script)';
+        } else if (state.gasUrl) {
+          lbl.textContent = 'สถานะการเก็บข้อมูล: เชื่อมต่อฐานข้อมูล Google Sheets ออนไลน์แล้ว';
+        } else {
+          lbl.textContent = 'สถานะการเก็บข้อมูล: บันทึกในเบราว์เซอร์ (คลิกปุ่มด้านขวาเพื่อผูก Google Sheets)';
+        }
+      }
+
+      function syncFromGoogleSheet(statusEl) {
+        if (isNativeGas) {
+          if (statusEl) {
+            statusEl.textContent = 'กำลังดึงข้อมูลจาก Google Sheets...';
+            statusEl.className = 'inline-status';
+          }
+          window.google.script.run
+            .withSuccessHandler(function (res) {
+              if (res && Array.isArray(res.students)) {
+                state.students = res.students;
+                state.students.forEach(function (s) {
+                  if (state.selectedIds[s.id] === undefined) state.selectedIds[s.id] = true;
+                });
+                storage.set(STORAGE_STUDENTS, state.students);
+              }
+              if (res && res.config && Object.keys(res.config).length > 0) {
+                state.config = Object.assign({}, state.config, res.config);
+                storage.set(STORAGE_CONFIG, state.config);
+                populateConfigInputs();
+              }
+              renderRecordsTable();
+              renderPrintableDocument();
+              if (statusEl) {
+                statusEl.textContent = 'ดึงข้อมูลล่าสุดจาก Google Sheets เรียบร้อยแล้ว';
+                statusEl.className = 'inline-status ok';
+              }
+            })
+            .withFailureHandler(function (err) {
+              if (statusEl) {
+                statusEl.textContent = 'ดึงข้อมูลไม่สำเร็จ: ' + String(err);
+                statusEl.className = 'inline-status err';
+              }
+            })
+            .getInitialData();
+          return;
+        }
+
+        if (!state.gasUrl) {
+          if (statusEl) {
+            statusEl.textContent = 'ยังไม่ได้ตั้งค่าลิงก์ Google Sheets (ผู้ดูแลเว็บตั้งค่าได้ที่ปุ่มท้ายหน้าเว็บ)';
+            statusEl.className = 'inline-status err';
+          }
+          return;
+        }
+
+        if (statusEl) {
+          statusEl.textContent = 'กำลังเชื่อมต่อ Google Sheets...';
+          statusEl.className = 'inline-status';
+        }
+
+        var sep = state.gasUrl.indexOf('?') === -1 ? '?' : '&';
+        fetch(state.gasUrl + sep + 'action=list', { method: 'GET' })
+          .then(function (r) { return r.json(); })
+          .then(function (json) {
+            if (!json || !json.ok) throw new Error((json && json.error) || 'รูปแบบข้อมูลไม่ถูกต้อง');
+            var payload = json.data || {};
+            if (Array.isArray(payload.students)) {
+              state.students = payload.students;
+              state.students.forEach(function (s) {
+                if (state.selectedIds[s.id] === undefined) state.selectedIds[s.id] = true;
+              });
+              storage.set(STORAGE_STUDENTS, state.students);
+            }
+            if (payload.config && Object.keys(payload.config).length > 0) {
+              state.config = Object.assign({}, state.config, payload.config);
+              storage.set(STORAGE_CONFIG, state.config);
+              populateConfigInputs();
+            }
+            renderRecordsTable();
+            renderPrintableDocument();
+            if (statusEl) {
+              statusEl.textContent = 'ซิงก์ข้อมูลกับ Google Sheets สำเร็จ';
+              statusEl.className = 'inline-status ok';
+            }
+          })
+          .catch(function (err) {
+            if (statusEl) {
+              statusEl.textContent = 'เชื่อมต่อไม่ได้ (' + err.message + ')';
+              statusEl.className = 'inline-status err';
+            }
+          });
+      }
+
+      function pushActionToGoogleSheet(payload, cb) {
+        if (isNativeGas) {
+          var runner = window.google.script.run
+            .withSuccessHandler(function () { if (cb) cb(true); })
+            .withFailureHandler(function (err) { if (cb) cb(false, String(err)); });
+
+          if (payload.action === 'saveStudent') runner.saveStudentRecord(payload.record);
+          else if (payload.action === 'deleteStudent') runner.deleteStudentRecord(payload.id);
+          else if (payload.action === 'saveConfig') runner.saveSchoolConfig(payload.config);
+          return;
+        }
+
+        if (!state.gasUrl) {
+          if (cb) cb(true, 'local');
+          return;
+        }
+
+        fetch(state.gasUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res && res.ok) {
+              if (cb) cb(true);
+            } else {
+              if (cb) cb(false, (res && res.error) || 'บันทึกไปยัง Google Sheets ไม่สำเร็จ');
+            }
+          })
+          .catch(function (err) {
+            if (cb) cb(false, err.message);
+          });
+      }
+
+      byId('btn-save-config').addEventListener('click', function () {
+        state.config = readConfigInputs();
+        storage.set(STORAGE_CONFIG, state.config);
+        var statusEl = byId('config-status');
+        statusEl.textContent = 'กำลังบันทึก...';
+        statusEl.className = 'inline-status';
+        pushActionToGoogleSheet({ action: 'saveConfig', config: state.config }, function (ok, mode) {
+          if (ok) {
+            statusEl.textContent = mode === 'local'
+              ? 'บันทึกข้อมูลหัวเอกสารและผู้ลงนามแล้ว'
+              : 'บันทึกข้อมูลหัวเอกสารลง Google Sheets แล้ว';
+            statusEl.className = 'inline-status ok';
+          } else {
+            statusEl.textContent = 'บันทึกในเครื่องแล้ว แต่ส่งไป Google Sheets ไม่สำเร็จ: ' + mode;
+            statusEl.className = 'inline-status err';
+          }
+          renderPrintableDocument();
+        });
+      });
+
+      // Validation
+      function validateFullName() {
+        var input = byId('stu-fullname');
+        var err = byId('err-stu-fullname');
+        var ok = input.value.trim().length > 0;
+        input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        err.classList.toggle('visible', !ok);
+        return ok;
+      }
+
+      byId('stu-fullname').addEventListener('blur', validateFullName);
+
+      function resetStudentForm() {
+        byId('stu-id').value = '';
+        byId('student-form').reset();
+
+        document.querySelectorAll('#student-form .custom-extra-input').forEach(function (el) {
+          el.value = '';
+          el.classList.remove('visible');
+        });
+
+        byId('stu-edu-level').value = 'มัธยมศึกษาตอนต้น';
+        byId('stu-prefix').value = 'นาย';
+        byId('stu-disease').value = 'ไม่มี';
+        byId('stu-allergy').value = 'ไม่มี';
+        byId('stu-has-pc').value = 'ไม่มี';
+        byId('stu-has-internet').value = 'มี';
+        byId('stu-group-ready').value = 'มี';
+
+        state.manualSummaryTouched = {};
+        EVAL_DOMAINS.forEach(function (dom) {
+          dom.items.forEach(function (item) {
+            setRadioVal('ev-' + item.key, '3');
+          });
+          byId('ev-sum-' + dom.id).value = 'ดี';
+          byId('ev-note-sel-' + dom.id).value = '';
+        });
+
+        byId('stu-fullname').setAttribute('aria-invalid', 'false');
+        byId('err-stu-fullname').classList.remove('visible');
+        byId('editing-banner').classList.remove('visible');
+        byId('btn-submit-student').textContent = 'บันทึกข้อมูลวิเคราะห์ผู้เรียน';
+      }
+
+      byId('btn-reset-form').addEventListener('click', function () {
+        resetStudentForm();
+        byId('form-status').textContent = '';
+      });
+
+      byId('btn-cancel-edit').addEventListener('click', function () {
+        resetStudentForm();
+        byId('form-status').textContent = 'ยกเลิกการแก้ไขแล้ว';
+        byId('form-status').className = 'inline-status';
+      });
+
+      function collectStudentRecordFromForm() {
+        var evalData = {};
+        EVAL_DOMAINS.forEach(function (dom) {
+          dom.items.forEach(function (item) {
+            evalData[item.key] = Number(getRadioVal('ev-' + item.key, 3));
+          });
+          evalData['sum_' + dom.id] = byId('ev-sum-' + dom.id).value;
+          evalData['note_' + dom.id] = getSelectOrCustom('ev-note-sel-' + dom.id, 'ev-note-custom-' + dom.id);
+        });
+
+        var prefix = byId('stu-prefix').value;
+        var rawName = byId('stu-fullname').value.trim();
+        var combinedName = rawName;
+        if (prefix && rawName.indexOf(prefix) !== 0) {
+          combinedName = prefix + rawName;
+        }
+
+        var existingId = byId('stu-id').value.trim();
+        var id = existingId || ('nfe_' + Date.now() + '_' + Math.floor(Math.random() * 1000));
+
+        return {
+          id: id,
+          code: byId('stu-code').value.trim(),
+          eduLevel: byId('stu-edu-level').value,
+          prefix: prefix,
+          nameOnly: rawName,
+          fullName: combinedName,
+          age: getSelectOrCustom('stu-age', 'stu-age-custom'),
+          birthDay: byId('stu-birth-day').value,
+          birthMonth: byId('stu-birth-month').value,
+          birthYear: getSelectOrCustom('stu-birth-year', 'stu-birth-year-custom'),
+          livingWith: getSelectOrCustom('stu-living-with', 'stu-living-with-custom'),
+          houseNo: byId('stu-house-no').value.trim(),
+          moo: getSelectOrCustom('stu-moo', 'stu-moo-custom'),
+          road: byId('stu-road').value.trim(),
+          tambon: byId('stu-tambon').value.trim(),
+          amphoe: byId('stu-amphoe').value.trim(),
+          province: byId('stu-province').value,
+          zipcode: byId('stu-zipcode').value.trim(),
+          phone: byId('stu-phone').value.trim(),
+          email: byId('stu-email').value.trim(),
+          weight: byId('stu-weight').value.trim(),
+          height: byId('stu-height').value.trim(),
+          disease: getSelectOrCustom('stu-disease', 'stu-disease-custom'),
+          allergy: getSelectOrCustom('stu-allergy', 'stu-allergy-custom'),
+          fav1: getSelectOrCustom('stu-fav1', 'stu-fav1-custom'),
+          fav2: getSelectOrCustom('stu-fav2', 'stu-fav2-custom'),
+          dis1: getSelectOrCustom('stu-dis1', 'stu-dis1-custom'),
+          dis2: getSelectOrCustom('stu-dis2', 'stu-dis2-custom'),
+          specialSkill: getSelectOrCustom('stu-special-skill', 'stu-special-skill-custom'),
+          hasPC: byId('stu-has-pc').value,
+          hasInternet: byId('stu-has-internet').value,
+          useSearch: byId('use-search').checked,
+          useSearchHr: byId('use-search-hr').value,
+          useGame: byId('use-game').checked,
+          useGameHr: byId('use-game-hr').value,
+          useFb: byId('use-fb').checked,
+          useFbHr: byId('use-fb-hr').value,
+          useOther: byId('use-other').checked,
+          useOtherText: getSelectOrCustom('use-other-sel', 'use-other-custom'),
+          progWord: byId('prog-word').checked,
+          progPpt: byId('prog-ppt').checked,
+          progExcel: byId('prog-excel').checked,
+          progPs: byId('prog-ps').checked,
+          progOther: byId('prog-other').checked,
+          progOtherText: getSelectOrCustom('prog-other-sel', 'prog-other-custom'),
+          groupReady: byId('stu-group-ready').value,
+          unreadyReason: getSelectOrCustom('stu-unready-reason', 'stu-unready-reason-custom'),
+          unreadySolution: getSelectOrCustom('stu-unready-solution', 'stu-unready-solution-custom'),
+          motto: getSelectOrCustom('stu-motto', 'stu-motto-custom'),
+          eval: evalData,
+          teacherComment: byId('stu-teacher-comment').value.trim()
+        };
+      }
+
+      byId('student-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        state.config = readConfigInputs();
+        storage.set(STORAGE_CONFIG, state.config);
+
+        var formStatus = byId('form-status');
+        if (!validateFullName()) {
+          formStatus.textContent = 'กรุณาระบุชื่อ-นามสกุลผู้เรียนในข้อ 1.1 ให้ครบถ้วน';
+          formStatus.className = 'inline-status err';
+          byId('stu-fullname').focus();
+          return;
+        }
+
+        var record = collectStudentRecordFromForm();
+        var idx = state.students.findIndex(function (s) { return String(s.id) === String(record.id); });
+        if (idx >= 0) {
+          state.students[idx] = record;
+        } else {
+          state.students.push(record);
+          state.selectedIds[record.id] = true;
+        }
+
+        storage.set(STORAGE_STUDENTS, state.students);
+
+        var submitBtn = byId('btn-submit-student');
+        submitBtn.disabled = true;
+        formStatus.textContent = 'กำลังบันทึกข้อมูล...';
+        formStatus.className = 'inline-status';
+
+        pushActionToGoogleSheet({ action: 'saveStudent', record: record }, function (ok, mode) {
+          submitBtn.disabled = false;
+          resetStudentForm();
+          if (ok) {
+            formStatus.textContent = mode === 'local'
+              ? 'บันทึกข้อมูลของ ' + record.fullName + ' เรียบร้อยแล้ว'
+              : 'บันทึกข้อมูลของ ' + record.fullName + ' ลง Google Sheets เรียบร้อยแล้ว';
+            formStatus.className = 'inline-status ok';
+          } else {
+            formStatus.textContent = 'บันทึกในเครื่องแล้ว แต่ส่งไป Google Sheets ไม่สำเร็จ (' + mode + ')';
+            formStatus.className = 'inline-status err';
+          }
+          renderRecordsTable();
+          renderPrintableDocument();
+        });
+      });
+
+      function loadStudentForEdit(id) {
+        var s = state.students.find(function (item) { return String(item.id) === String(id); });
+        if (!s) return;
+
+        resetStudentForm();
+        byId('stu-id').value = s.id;
+        byId('stu-code').value = s.code || '';
+        byId('stu-edu-level').value = s.eduLevel || 'มัธยมศึกษาตอนต้น';
+
+        if (s.prefix !== undefined && s.nameOnly !== undefined) {
+          byId('stu-prefix').value = s.prefix;
+          byId('stu-fullname').value = s.nameOnly;
+        } else {
+          byId('stu-prefix').value = '';
+          byId('stu-fullname').value = s.fullName || '';
+        }
+
+        setSelectOrCustom('stu-age', 'stu-age-custom', s.age, '');
+        byId('stu-birth-day').value = s.birthDay || '';
+        byId('stu-birth-month').value = s.birthMonth || '';
+        setSelectOrCustom('stu-birth-year', 'stu-birth-year-custom', s.birthYear, '');
+        setSelectOrCustom('stu-living-with', 'stu-living-with-custom', s.livingWith, '');
+        byId('stu-house-no').value = s.houseNo || '';
+        setSelectOrCustom('stu-moo', 'stu-moo-custom', s.moo, '');
+        byId('stu-road').value = s.road || '';
+        byId('stu-tambon').value = s.tambon || '';
+        byId('stu-amphoe').value = s.amphoe || '';
+        byId('stu-province').value = s.province || '';
+        byId('stu-zipcode').value = s.zipcode || '';
+        byId('stu-phone').value = s.phone || '';
+        byId('stu-email').value = s.email || '';
+        byId('stu-weight').value = s.weight || '';
+        byId('stu-height').value = s.height || '';
+        setSelectOrCustom('stu-disease', 'stu-disease-custom', s.disease, 'ไม่มี');
+        setSelectOrCustom('stu-allergy', 'stu-allergy-custom', s.allergy, 'ไม่มี');
+        setSelectOrCustom('stu-fav1', 'stu-fav1-custom', s.fav1, '');
+        setSelectOrCustom('stu-fav2', 'stu-fav2-custom', s.fav2, '');
+        setSelectOrCustom('stu-dis1', 'stu-dis1-custom', s.dis1, '');
+        setSelectOrCustom('stu-dis2', 'stu-dis2-custom', s.dis2, '');
+        setSelectOrCustom('stu-special-skill', 'stu-special-skill-custom', s.specialSkill, '');
+
+        byId('stu-has-pc').value = s.hasPC || 'ไม่มี';
+        byId('stu-has-internet').value = s.hasInternet || 'มี';
+        byId('use-search').checked = Boolean(s.useSearch);
+        byId('use-search-hr').value = s.useSearchHr || '';
+        byId('use-game').checked = Boolean(s.useGame);
+        byId('use-game-hr').value = s.useGameHr || '';
+        byId('use-fb').checked = Boolean(s.useFb);
+        byId('use-fb-hr').value = s.useFbHr || '';
+        byId('use-other').checked = Boolean(s.useOther);
+        setSelectOrCustom('use-other-sel', 'use-other-custom', s.useOtherText, '');
+
+        byId('prog-word').checked = Boolean(s.progWord);
+        byId('prog-ppt').checked = Boolean(s.progPpt);
+        byId('prog-excel').checked = Boolean(s.progExcel);
+        byId('prog-ps').checked = Boolean(s.progPs);
+        byId('prog-other').checked = Boolean(s.progOther);
+        setSelectOrCustom('prog-other-sel', 'prog-other-custom', s.progOtherText, '');
+
+        byId('stu-group-ready').value = s.groupReady || 'มี';
+        setSelectOrCustom('stu-unready-reason', 'stu-unready-reason-custom', s.unreadyReason, '');
+        setSelectOrCustom('stu-unready-solution', 'stu-unready-solution-custom', s.unreadySolution, '');
+        setSelectOrCustom('stu-motto', 'stu-motto-custom', s.motto, '');
+        byId('stu-teacher-comment').value = s.teacherComment || '';
+
+        var ev = s.eval || {};
+        EVAL_DOMAINS.forEach(function (dom) {
+          dom.items.forEach(function (item) {
+            setRadioVal('ev-' + item.key, ev[item.key] || 3);
+          });
+          if (ev['sum_' + dom.id]) {
+            byId('ev-sum-' + dom.id).value = ev['sum_' + dom.id];
+            state.manualSummaryTouched[dom.id] = true;
+          }
+          setSelectOrCustom('ev-note-sel-' + dom.id, 'ev-note-custom-' + dom.id, ev['note_' + dom.id], '');
+        });
+
+        byId('editing-banner-text').textContent = 'กำลังแก้ไขข้อมูลผู้เรียน: ' + (s.fullName || '');
+        byId('editing-banner').classList.add('visible');
+        byId('btn-submit-student').textContent = 'บันทึกการแก้ไข';
+        byId('form-status').textContent = '';
+
+        switchTab('view-form');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function badgeClassForEval(word) {
+        if (word === 'ดี') return 'badge-pill badge-good';
+        if (word === 'ปรับปรุง') return 'badge-pill badge-low';
+        return 'badge-pill badge-mid';
+      }
+
+      function getFilteredStudents() {
+        var levelFilter = byId('filter-edu-level').value;
+        if (levelFilter === 'all') return state.students;
+        return state.students.filter(function (s) {
+          return s.eduLevel === levelFilter;
+        });
+      }
+
+      // Render Records Table
+      function renderRecordsTable() {
+        var emptyEl = byId('records-empty');
+        var filterWrapEl = byId('records-filter-wrap');
+        var wrapEl = byId('records-table-container');
+        var tbody = byId('records-tbody');
+        var picker = byId('print-student-id');
+        var selectAllChk = byId('chk-select-all');
+
+        if (!state.students.length) {
+          emptyEl.style.display = 'block';
+          filterWrapEl.style.display = 'none';
+          wrapEl.style.display = 'none';
+          tbody.innerHTML = '';
+          picker.innerHTML = '<option value="">-- ยังไม่มีข้อมูลผู้เรียน --</option>';
+          return;
+        }
+
+        emptyEl.style.display = 'none';
+        filterWrapEl.style.display = 'flex';
+        wrapEl.style.display = 'block';
+
+        var filtered = getFilteredStudents();
+
+        var prevSelected = picker.value;
+        picker.innerHTML = filtered.length
+          ? filtered.map(function (s, i) {
+              return '<option value="' + escapeHtml(s.id) + '">' + (i + 1) + '. ' + escapeHtml(s.fullName) + ' (' + escapeHtml(s.eduLevel || '-') + ')</option>';
+            }).join('')
+          : '<option value="">-- ไม่มีผู้เรียนในระดับที่เลือก --</option>';
+
+        if (prevSelected && filtered.some(function (s) { return String(s.id) === String(prevSelected); })) {
+          picker.value = prevSelected;
+        }
+
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="12" class="num" style="padding:20px; color:#64748b;">ไม่พบรายชื่อผู้เรียนในระดับการศึกษาที่เลือก</td></tr>';
+          selectAllChk.checked = false;
+          return;
+        }
+
+        var allChecked = filtered.every(function (s) { return Boolean(state.selectedIds[s.id]); });
+        selectAllChk.checked = allChecked;
+
+        tbody.innerHTML = filtered.map(function (s, idx) {
+          var ev = s.eval || {};
+          var isChecked = Boolean(state.selectedIds[s.id]);
+          var isConfirmingDelete = String(state.pendingDeleteId) === String(s.id);
+          var actionsHtml = isConfirmingDelete
+            ? '<div class="btn-row" style="justify-content:flex-end; gap:6px;">' +
+                '<button type="button" class="btn btn-danger btn-sm" data-action="confirm-del" data-id="' + escapeHtml(s.id) + '">ยืนยันลบ</button>' +
+                '<button type="button" class="btn btn-secondary btn-sm" data-action="cancel-del">ยกเลิก</button>' +
+              '</div>'
+            : '<div class="btn-row" style="justify-content:flex-end; gap:6px;">' +
+                '<button type="button" class="btn btn-secondary btn-sm" data-action="print-one" data-id="' + escapeHtml(s.id) + '">ดูใบพิมพ์</button>' +
+                '<button type="button" class="btn btn-secondary btn-sm" data-action="edit" data-id="' + escapeHtml(s.id) + '">แก้ไข</button>' +
+                '<button type="button" class="btn btn-danger btn-sm" data-action="ask-del" data-id="' + escapeHtml(s.id) + '">ลบ</button>' +
+              '</div>';
+
+          return '<tr>' +
+            '<td class="num"><input type="checkbox" class="row-select-chk" data-id="' + escapeHtml(s.id) + '"' + (isChecked ? ' checked' : '') + ' aria-label="เลือก ' + escapeHtml(s.fullName) + '"></td>' +
+            '<td class="num">' + (idx + 1) + '</td>' +
+            '<td><strong>' + escapeHtml(s.fullName) + '</strong>' + (s.code ? '<br><small style="color:#64748b;">รหัส: ' + escapeHtml(s.code) + '</small>' : '') + '</td>' +
+            '<td>' + escapeHtml(s.eduLevel || '-') + '</td>' +
+            '<td class="num">' + escapeHtml(s.age || '-') + '</td>' +
+            '<td class="num">' + escapeHtml(s.groupReady || 'มี') + '</td>' +
+            '<td class="num"><span class="' + badgeClassForEval(ev.sum_d1) + '">' + escapeHtml(ev.sum_d1 || 'ดี') + '</span></td>' +
+            '<td class="num"><span class="' + badgeClassForEval(ev.sum_d2) + '">' + escapeHtml(ev.sum_d2 || 'ดี') + '</span></td>' +
+            '<td class="num"><span class="' + badgeClassForEval(ev.sum_d3) + '">' + escapeHtml(ev.sum_d3 || 'ดี') + '</span></td>' +
+            '<td class="num"><span class="' + badgeClassForEval(ev.sum_d4) + '">' + escapeHtml(ev.sum_d4 || 'ดี') + '</span></td>' +
+            '<td class="num"><span class="' + badgeClassForEval(ev.sum_d5) + '">' + escapeHtml(ev.sum_d5 || 'ดี') + '</span></td>' +
+            '<td style="text-align: right;">' + actionsHtml + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      byId('filter-edu-level').addEventListener('change', function () {
+        renderRecordsTable();
+        renderPrintableDocument();
+      });
+
+      byId('chk-select-all').addEventListener('change', function () {
+        var checked = this.checked;
+        getFilteredStudents().forEach(function (s) {
+          state.selectedIds[s.id] = checked;
+        });
+        renderRecordsTable();
+        if (byId('print-mode').value === 'selected') {
+          renderPrintableDocument();
+        }
+      });
+
+      byId('records-tbody').addEventListener('change', function (e) {
+        if (e.target.classList.contains('row-select-chk')) {
+          var id = e.target.getAttribute('data-id');
+          state.selectedIds[id] = e.target.checked;
+          var filtered = getFilteredStudents();
+          byId('chk-select-all').checked = filtered.length > 0 && filtered.every(function (s) { return Boolean(state.selectedIds[s.id]); });
+          if (byId('print-mode').value === 'selected') {
+            renderPrintableDocument();
+          }
+        }
+      });
+
+      byId('records-tbody').addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        var action = btn.getAttribute('data-action');
+        var id = btn.getAttribute('data-id');
+
+        if (action === 'edit') {
+          loadStudentForEdit(id);
+        } else if (action === 'print-one') {
+          byId('print-mode').value = 'individual';
+          byId('print-student-picker-wrap').style.display = 'flex';
+          byId('print-student-id').value = id;
+          renderPrintableDocument();
+          byId('printable-stage').scrollIntoView({ behavior: 'smooth' });
+        } else if (action === 'ask-del') {
+          state.pendingDeleteId = id;
+          renderRecordsTable();
+        } else if (action === 'cancel-del') {
+          state.pendingDeleteId = null;
+          renderRecordsTable();
+        } else if (action === 'confirm-del') {
+          state.pendingDeleteId = null;
+          delete state.selectedIds[id];
+          state.students = state.students.filter(function (s) { return String(s.id) !== String(id); });
+          storage.set(STORAGE_STUDENTS, state.students);
+          pushActionToGoogleSheet({ action: 'deleteStudent', id: id });
+          renderRecordsTable();
+          renderPrintableDocument();
+        }
+      });
+
+      // Print Formatting Helpers matching PDF layout
+      function parenMark(checked) {
+        return '<span class="doc-paren-check">(' + (checked ? ' &#10003; ' : '&nbsp;&nbsp;&nbsp;&nbsp;') + ')</span>';
+      }
+
+      function fillSpan(val, minWidthPx) {
+        var text = (val != null && String(val).trim() !== '') ? escapeHtml(val) : '&nbsp;';
+        var style = minWidthPx ? ' style="min-width:' + minWidthPx + 'px;"' : '';
+        return '<span class="fill-val"' + style + '>' + text + '</span>';
+      }
+
+      function buildSignatureCertificationHtml(cfg) {
+        var teacherParen = cfg.teacher ? '(' + escapeHtml(cfg.teacher) + ')' : '(................................................)';
+        var directorParen = cfg.director ? '(' + escapeHtml(cfg.director) + ')' : '(................................................)';
+        var directorPos = escapeHtml(cfg.directorPos || DEFAULT_DIRECTOR_POS);
+
+        return '<div class="signature-grid">' +
+          '<div class="sig-box">' +
+            '<div>' +
+              '<div class="sig-box-title">ผู้วิเคราะห์และรายงานผล</div>' +
+              '<p style="margin:0; font-size:12.8px; text-align:center;">ได้ดำเนินการวิเคราะห์ผู้เรียนรายบุคคลตามสภาพจริง</p>' +
+            '</div>' +
+            '<div class="sig-lines">' +
+              'ลงชื่อ............................................ครูผู้สอน<br>' +
+              teacherParen + '<br>' +
+              'วันที่ ........../........../..........' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="sig-box">' +
+            '<div>' +
+              '<div class="sig-box-title">คำรับรองของผู้บริหารสถานศึกษา</div>' +
+              '<div class="exec-check-item"><span class="checkbox-square"></span><span>รับทราบและรับรองผลการวิเคราะห์ผู้เรียนรายบุคคล</span></div>' +
+              '<div class="exec-check-item"><span class="checkbox-square"></span><span>เห็นควรนำข้อมูลไปวางแผนจัดกิจกรรมการเรียนรู้รายบุคคล</span></div>' +
+              '<div style="font-size:12.5px; margin-top:3px;">ข้อเสนอแนะเพิ่มเติม:</div>' +
+              '<div class="dotted-comment"></div>' +
+            '</div>' +
+            '<div class="sig-lines">' +
+              'ลงชื่อ............................................<br>' +
+              directorParen + '<br>' +
+              'ตำแหน่ง ' + directorPos + '<br>' +
+              'วันที่ ........../........../..........' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function renderIndividualTwoPageHtml(stu, cfg, breakAfterPage2) {
+        var s = stu || {};
+        var ev = s.eval || {};
+        var schoolLine = cfg.school ? '<p style="margin:2px 0; font-weight:600;">สถานศึกษา ' + escapeHtml(cfg.school) + '</p>' : '';
+        var termVal = fillSpan(cfg.term, 44);
+        var yearVal = fillSpan(cfg.year, 64);
+
+        var page1 =
+          '<div class="a4-page page-break-after">' +
+            '<div class="doc-center-header">' +
+              '<h2>แบบวิเคราะห์ผู้เรียนรายบุคคล</h2>' +
+              '<h3>หลักสูตรการศึกษานอกระบบระดับการศึกษาขั้นพื้นฐาน พุทธศักราช ๒๕๕๑</h3>' +
+              schoolLine +
+              '<p>ภาคเรียนที่ ' + termVal + ' &nbsp;&nbsp; ปีการศึกษา ' + yearVal + '</p>' +
+            '</div>' +
+
+            '<div class="doc-edu-level-line">' +
+              '<strong>ระดับการศึกษา</strong>' +
+              '<span>' + parenMark(s.eduLevel === 'ประถมศึกษา') + 'ประถมศึกษา</span>' +
+              '<span>' + parenMark(s.eduLevel === 'มัธยมศึกษาตอนต้น') + 'มัธยมศึกษาตอนต้น</span>' +
+              '<span>' + parenMark(s.eduLevel === 'มัธยมศึกษาตอนปลาย') + 'มัธยมศึกษาตอนปลาย</span>' +
+            '</div>' +
+
+            '<div class="doc-section-heading">๑. ข้อมูลพื้นฐาน</div>' +
+            '<div class="doc-item-list">' +
+              '<div class="doc-line">๑.๑ ชื่อ-นามสกุล ' + fillSpan(s.fullName, 290) + ' อายุ ' + fillSpan(s.age, 55) + ' ปี</div>' +
+              '<div class="doc-line">๑.๒ วัน เดือน ปีเกิด วันที่ ' + fillSpan(s.birthDay, 55) + ' เดือน ' + fillSpan(s.birthMonth, 145) + ' พ.ศ. ' + fillSpan(s.birthYear, 80) + '</div>' +
+              '<div class="doc-line">' +
+                '๑.๓ ปัจจุบันอาศัยอยู่กับ ' + fillSpan(s.livingWith, 130) +
+                ' บ้านเลขที่ ' + fillSpan(s.houseNo, 65) +
+                ' หมู่ที่ ' + fillSpan(s.moo, 45) +
+                ' ถนน ' + fillSpan(s.road, 95) + '<br>' +
+                'ตำบล ' + fillSpan(s.tambon, 105) +
+                ' อำเภอ ' + fillSpan(s.amphoe, 110) +
+                ' จังหวัด ' + fillSpan(s.province, 105) +
+                ' รหัสไปรษณีย์ ' + fillSpan(s.zipcode, 75) + '<br>' +
+                'โทรศัพท์ ' + fillSpan(s.phone, 160) +
+              '</div>' +
+              '<div class="doc-line">' +
+                '๑.๔ ข้อมูลด้านสุขภาพ &nbsp; น้ำหนัก ' + fillSpan(s.weight, 70) + ' กิโลกรัม &nbsp; ส่วนสูง ' + fillSpan(s.height, 70) + ' เซนติเมตร<br>' +
+                'โรคประจำตัว ' + fillSpan(s.disease, 150) + ' ประวัติการแพ้ยา/อาหาร ' + fillSpan(s.allergy, 190) +
+              '</div>' +
+              '<div class="doc-line">๑.๕ วิชาที่ชอบ &nbsp; ๑. ' + fillSpan(s.fav1, 175) + ' &nbsp; ๒. ' + fillSpan(s.fav2, 185) + '</div>' +
+              '<div class="doc-line">๑.๖ วิชาที่ไม่ชอบ &nbsp; ๑. ' + fillSpan(s.dis1, 170) + ' &nbsp; ๒. ' + fillSpan(s.dis2, 180) + '</div>' +
+              '<div class="doc-line">๑.๗ ความสามารถพิเศษ คือ ' + fillSpan(s.specialSkill, 360) + '</div>' +
+              '<div class="doc-line">๑.๘ ผู้เรียนมีคอมพิวเตอร์ใช้ที่บ้านหรือไม่ &nbsp;&nbsp; ' + parenMark(s.hasPC === 'มี') + 'มี &nbsp;&nbsp;&nbsp;&nbsp; ' + parenMark(s.hasPC === 'ไม่มี') + 'ไม่มี</div>' +
+              '<div class="doc-line">๑.๙ ที่บ้านผู้เรียนมีระบบอินเทอร์เน็ตหรือไม่ &nbsp;&nbsp; ' + parenMark(s.hasInternet === 'มี') + 'มี &nbsp;&nbsp;&nbsp;&nbsp; ' + parenMark(s.hasInternet === 'ไม่มี') + 'ไม่มี</div>' +
+              '<div class="doc-line">' +
+                '๑.๑๐ ผู้เรียนใช้คอมพิวเตอร์ในชีวิตประจำวันอย่างไร ( เลือกตอบได้มากกว่า ๑ ข้อ )<br>' +
+                '<div style="padding-left:18px;">' +
+                  parenMark(Boolean(s.useSearch)) + 'ใช้อินเทอร์เน็ตสืบค้นข้อมูล ( เป็นเวลา ' + fillSpan(s.useSearchHr, 45) + ' ชม. )<br>' +
+                  parenMark(Boolean(s.useGame)) + 'เล่นเกมส์ ( เป็นเวลา ' + fillSpan(s.useGameHr, 45) + ' ชม. ) &nbsp;&nbsp; ' +
+                  parenMark(Boolean(s.useFb)) + 'เล่น FaceBook ( เป็นเวลา ' + fillSpan(s.useFbHr, 45) + ' ชม. )<br>' +
+                  parenMark(Boolean(s.useOther)) + 'โปรแกรมอื่น ๆ ( ระบุ ) ' + fillSpan(s.useOtherText, 240) +
+                '</div>' +
+              '</div>' +
+              '<div class="doc-line">' +
+                '๑.๑๑ นักเรียนใช้โปรแกรมคอมพิวเตอร์ใดได้บ้าง ( เลือกได้มากกว่า ๑ ข้อ )<br>' +
+                '<div style="padding-left:18px;">' +
+                  parenMark(Boolean(s.progWord)) + 'Word &nbsp;&nbsp;&nbsp; ' +
+                  parenMark(Boolean(s.progPpt)) + 'Power point &nbsp;&nbsp;&nbsp; ' +
+                  parenMark(Boolean(s.progExcel)) + 'Excel &nbsp;&nbsp;&nbsp; ' +
+                  parenMark(Boolean(s.progPs)) + 'Photoshop<br>' +
+                  parenMark(Boolean(s.progOther)) + 'โปรแกรมอื่น ๆ (ระบุ) ' + fillSpan(s.progOtherText, 260) +
+                '</div>' +
+              '</div>' +
+              '<div class="doc-line">๑.๑๒ E-mail address ของผู้เรียน (ถ้ามี) คือ ' + fillSpan(s.email, 310) + '</div>' +
+              '<div class="doc-line">' +
+                '๑.๑๓ ความพร้อมในการร่วมเรียนรู้ในการพบกลุ่ม &nbsp;&nbsp; ' + parenMark(s.groupReady === 'มี') + 'มี &nbsp;&nbsp;&nbsp;&nbsp; ' + parenMark(s.groupReady === 'ไม่พร้อม') + 'ไม่พร้อม<br>' +
+                '<div style="padding-left:18px;">' +
+                  'กรณีที่ ไม่พร้อม ให้ระบุเหตุผล เพราะ ' + fillSpan(s.unreadyReason, 290) + '<br>' +
+                  'การแก้ไขปัญหา จะกำหนดการเรียนรู้ โดย ' + fillSpan(s.unreadySolution, 280) +
+                '</div>' +
+              '</div>' +
+              '<div class="doc-line">๑.๑๔ ผู้เรียนมีคติประจำใจ คือ ' + fillSpan(s.motto, 350) + '</div>' +
+            '</div>' +
+          '</div>';
+
+        var evalRowsHtml = EVAL_DOMAINS.map(function (dom) {
+          var labelsStack = '<div style="font-weight:700; margin-bottom:2px;">' + escapeHtml(dom.title) + '</div><div class="subitem-stack">' +
+            dom.items.map(function (it) { return '<div>' + escapeHtml(it.thaiLabel) + '</div>'; }).join('') +
+          '</div>';
+
+          function buildCheckCol(targetScore) {
+            return '<div style="height:20px;"></div><div class="mark-stack">' +
+              dom.items.map(function (it) {
+                var val = Number(ev[it.key] || 0);
+                return '<div>' + (val === targetScore ? '&#10003;' : '.....') + '</div>';
+              }).join('') +
+            '</div>';
+          }
+
+          var sumText = stu ? escapeHtml(ev['sum_' + dom.id] || 'ดี') : '';
+          var noteText = stu ? escapeHtml(ev['note_' + dom.id] || '') : '';
+
+          return '<tr>' +
+            '<td class="center" style="font-weight:700;">' + dom.thaiNum + '</td>' +
+            '<td>' + labelsStack + '</td>' +
+            '<td class="center">' + buildCheckCol(3) + '</td>' +
+            '<td class="center">' + buildCheckCol(2) + '</td>' +
+            '<td class="center">' + buildCheckCol(1) + '</td>' +
+            '<td class="center" style="vertical-align:middle; font-weight:700;">' + sumText + '</td>' +
+            '<td style="vertical-align:middle;">' + noteText + '</td>' +
+          '</tr>';
+        }).join('');
+
+        var commentHtml = (s.teacherComment && s.teacherComment.trim())
+          ? '<div class="comment-lines-box">' + escapeHtml(s.teacherComment) + '</div>'
+          : '<div class="dotted-comment"></div><div class="dotted-comment"></div>';
+
+        var page2Class = breakAfterPage2 ? 'a4-page page-break-after' : 'a4-page';
+        var page2 =
+          '<div class="' + page2Class + '">' +
+            '<div class="doc-section-heading" style="margin-top:0;">๒. การวิเคราะห์ผู้เรียน</div>' +
+            '<table class="official-eval-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th rowspan="2" style="width:44px;">ด้านที่</th>' +
+                  '<th rowspan="2">รายการวิเคราะห์ผู้เรียน</th>' +
+                  '<th colspan="3">ผลการประเมิน</th>' +
+                  '<th rowspan="2" style="width:76px;">สรุปผล<br>การประเมิน</th>' +
+                  '<th rowspan="2" style="width:175px;">การแปลข้อมูล<br>และ / หรือ<br>สิ่งที่ควรปรับปรุง/แก้ไข</th>' +
+                '</tr>' +
+                '<tr>' +
+                  '<th style="width:48px;">ดี<br>(๓)</th>' +
+                  '<th style="width:52px;">ปาน<br>กลาง<br>(๒)</th>' +
+                  '<th style="width:52px;">ปรับ<br>ปรุง<br>(๑)</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' + evalRowsHtml + '</tbody>' +
+            '</table>' +
+
+            '<div class="teacher-comment-block">' +
+              '<strong>ความคิดเห็น/ข้อเสนอแนะของครูผู้สอน</strong>' +
+              commentHtml +
+            '</div>' +
+
+            buildSignatureCertificationHtml(cfg) +
+          '</div>';
+
+        return page1 + page2;
+      }
+
+      function renderSummarySheetHtml(list, cfg) {
+        var schoolLine = cfg.school ? escapeHtml(cfg.school) : '........................................................';
+        var termText = cfg.term ? escapeHtml(cfg.term) : '........';
+        var yearText = cfg.year ? escapeHtml(cfg.year) : '............';
+        var teacherText = cfg.teacher ? escapeHtml(cfg.teacher) : '........................................';
+
+        var rowsHtml = '';
+        if (!list.length) {
+          rowsHtml = '<tr><td colspan="10" class="center" style="padding:20px; color:#475569;">ยังไม่มีรายชื่อผู้เรียนสำหรับแสดงตารางสรุป</td></tr>';
+        } else {
+          rowsHtml = list.map(function (s, idx) {
+            var ev = s.eval || {};
+            return '<tr>' +
+              '<td class="center">' + (idx + 1) + '</td>' +
+              '<td>' + escapeHtml(s.fullName) + '</td>' +
+              '<td class="center">' + escapeHtml(s.eduLevel || '-') + '</td>' +
+              '<td class="center">' + escapeHtml(s.age || '-') + '</td>' +
+              '<td class="center">' + escapeHtml(s.groupReady || 'มี') + '</td>' +
+              '<td class="center">' + escapeHtml(ev.sum_d1 || 'ดี') + '</td>' +
+              '<td class="center">' + escapeHtml(ev.sum_d2 || 'ดี') + '</td>' +
+              '<td class="center">' + escapeHtml(ev.sum_d3 || 'ดี') + '</td>' +
+              '<td class="center">' + escapeHtml(ev.sum_d4 || 'ดี') + '</td>' +
+              '<td class="center">' + escapeHtml(ev.sum_d5 || 'ดี') + '</td>' +
+            '</tr>';
+          }).join('');
+        }
+
+        return '<div class="a4-page">' +
+          '<div class="doc-center-header">' +
+            '<h2>แบบสรุปผลการวิเคราะห์ผู้เรียนรายบุคคล</h2>' +
+            '<h3>หลักสูตรการศึกษานอกระบบระดับการศึกษาขั้นพื้นฐาน พุทธศักราช ๒๕๕๑</h3>' +
+            '<p>สถานศึกษา ' + schoolLine + '</p>' +
+            '<p>ภาคเรียนที่ ' + termText + ' &nbsp;&nbsp; ปีการศึกษา ' + yearText + ' &nbsp;&nbsp; ครูผู้สอน ' + teacherText + '</p>' +
+          '</div>' +
+
+          '<table class="official-eval-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th rowspan="2" style="width:40px;">ลำดับ</th>' +
+                '<th rowspan="2">ชื่อ - นามสกุล</th>' +
+                '<th rowspan="2" style="width:92px;">ระดับการศึกษา</th>' +
+                '<th rowspan="2" style="width:42px;">อายุ</th>' +
+                '<th rowspan="2" style="width:58px;">ความพร้อม<br>พบกลุ่ม</th>' +
+                '<th colspan="5">สรุปผลการวิเคราะห์ผู้เรียน ๕ ด้าน</th>' +
+              '</tr>' +
+              '<tr>' +
+                '<th style="width:52px;">ด้าน ๑<br>ความรู้</th>' +
+                '<th style="width:52px;">ด้าน ๒<br>สติปัญญา</th>' +
+                '<th style="width:52px;">ด้าน ๓<br>พฤติกรรม</th>' +
+                '<th style="width:52px;">ด้าน ๔<br>กาย/จิต</th>' +
+                '<th style="width:52px;">ด้าน ๕<br>สังคม</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' + rowsHtml + '</tbody>' +
+          '</table>' +
+
+          buildSignatureCertificationHtml(cfg) +
+        '</div>';
+      }
+
+      function renderPrintableDocument() {
+        var stageEl = byId('printable-stage');
+        var mode = byId('print-mode').value;
+        var cfg = readConfigInputs();
+        var filtered = getFilteredStudents();
+
+        if (mode === 'summary') {
+          stageEl.innerHTML = renderSummarySheetHtml(filtered, cfg);
+          return;
+        }
+
+        if (mode === 'selected') {
+          var chosen = filtered.filter(function (s) { return Boolean(state.selectedIds[s.id]); });
+          if (!chosen.length) {
+            stageEl.innerHTML = renderIndividualTwoPageHtml(null, cfg, false);
+            return;
+          }
+          stageEl.innerHTML = chosen.map(function (stu, idx) {
+            return renderIndividualTwoPageHtml(stu, cfg, idx < chosen.length - 1);
+          }).join('');
+          return;
+        }
+
+        var selectedId = byId('print-student-id').value;
+        var stu = filtered.find(function (s) { return String(s.id) === String(selectedId); }) || filtered[0] || null;
+        stageEl.innerHTML = renderIndividualTwoPageHtml(stu, cfg, false);
+      }
+
+      // Print Toolbar Listeners
+      byId('print-mode').addEventListener('change', function () {
+        var isSingleIndiv = byId('print-mode').value === 'individual';
+        byId('print-student-picker-wrap').style.display = isSingleIndiv ? 'flex' : 'none';
+        renderPrintableDocument();
+      });
+
+      byId('print-student-id').addEventListener('change', renderPrintableDocument);
+
+      byId('btn-print-doc').addEventListener('click', function () {
+        renderPrintableDocument();
+        window.print();
+      });
+
+      // Shortcut buttons
+      byId('btn-go-add').addEventListener('click', function () { switchTab('view-form'); });
+      byId('btn-empty-add').addEventListener('click', function () { switchTab('view-form'); });
+      byId('btn-refresh-sheet').addEventListener('click', function () {
+        syncFromGoogleSheet(byId('records-sync-status'));
+      });
+
+      // Admin Modal for Google Sheets Setup
+      var adminModal = byId('admin-setup-modal');
+      byId('gas-code-preview').textContent = GAS_CODE_TEMPLATE;
+      byId('gas-url-input').value = state.gasUrl || '';
+
+      function closeAdminModal() {
+        adminModal.classList.remove('open');
+      }
+
+      byId('btn-open-admin-modal').addEventListener('click', function () {
+        byId('gas-url-input').value = state.gasUrl || '';
+        byId('gas-modal-status').textContent = '';
+        adminModal.classList.add('open');
+      });
+
+      byId('btn-close-admin-modal').addEventListener('click', closeAdminModal);
+      adminModal.addEventListener('click', function (e) {
+        if (e.target === adminModal) closeAdminModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && adminModal.classList.contains('open')) {
+          closeAdminModal();
+        }
+      });
+
+      byId('btn-save-gas-url').addEventListener('click', function () {
+        var url = byId('gas-url-input').value.trim();
+        state.gasUrl = url;
+        storage.set(STORAGE_GAS_URL, url);
+        updateConnectionFooter();
+        if (!url) {
+          byId('gas-modal-status').textContent = 'ล้างค่าลิงก์แล้ว';
+          byId('gas-modal-status').className = 'inline-status';
+          return;
+        }
+        syncFromGoogleSheet(byId('gas-modal-status'));
+      });
+
+      byId('btn-clear-gas-url').addEventListener('click', function () {
+        state.gasUrl = (GOOGLE_SHEET_WEBAPP_URL && GOOGLE_SHEET_WEBAPP_URL.trim()) || '';
+        byId('gas-url-input').value = state.gasUrl;
+        storage.remove(STORAGE_GAS_URL);
+        updateConnectionFooter();
+        byId('gas-modal-status').textContent = 'ล้างค่าลิงก์ที่บันทึกไว้ในเบราว์เซอร์แล้ว';
+        byId('gas-modal-status').className = 'inline-status';
+      });
+
+      byId('btn-copy-gas-code').addEventListener('click', function () {
+        var btn = byId('btn-copy-gas-code');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(GAS_CODE_TEMPLATE).then(function () {
+            btn.textContent = 'คัดลอกโค้ดสำเร็จแล้ว';
+            setTimeout(function () { btn.textContent = 'คัดลอกโค้ด Code.gs'; }, 2000);
+          }).catch(function () {});
+        }
+      });
+
+      // Initialize App
+      populateStaticSelectOptions();
+      bindCustomSelectToggles(document);
+      buildEvalFormDomains();
+      populateConfigInputs();
+      updateConnectionFooter();
+
+      // Default select existing records for convenience
+      state.students.forEach(function (s) {
+        state.selectedIds[s.id] = true;
+      });
+
+      renderRecordsTable();
+      renderPrintableDocument();
+
+      if (isNativeGas || state.gasUrl) {
+        syncFromGoogleSheet(byId('records-sync-status'));
+      }
+    })();
+  </script>
+</body>
+</html>
